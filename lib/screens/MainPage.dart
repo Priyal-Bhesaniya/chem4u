@@ -67,7 +67,7 @@ class MainPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                  Text('Quiz', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
+                  Text('Quiz', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black,fontWeight: FontWeight.bold)),
                 ],
               ),
 
@@ -108,7 +108,7 @@ class MainPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                  Text('Experiments', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
+                  Text('Experiments', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black,fontWeight: FontWeight.bold)),
                 ],
               ),
 
@@ -125,7 +125,7 @@ class MainPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                  Text('Notes', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
+                  Text('Notes', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black,fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
