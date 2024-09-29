@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Getting the screen height and width using MediaQuery
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 139, 205, 220),  // Background color matching the image
       appBar: AppBar(
@@ -14,45 +17,40 @@ class MainPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-  height: 100, // Set the desired height
-  width: 200,  // Set the desired width
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    color: Color.fromARGB(255, 104, 181, 198),
-    border: Border.all(color: Colors.black),
-  ),
-  child: Center(  // Center the text inside the container
-    child: Text(
-      'Hi ! Priyal',
-      style: TextStyle(color: Colors.black, fontSize: 24),
-    ),
-  ),
-)
-,
-            //Icon(Icons.person_outline, color: Colors.black, size: 30),
-            IconButton(onPressed: (){
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) =>  ProfileScreen(), // Replace with your next page widget
-              //     ),
-              //   );
-
-            }, icon: Icon(Icons.person_outline, color: Colors.black, size:30))
+              height: screenHeight * 0.1, // 10% of the screen height
+              width: screenWidth * 0.4,   // 40% of the screen width
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(255, 104, 181, 198),
+                border: Border.all(color: Colors.black),
+              ),
+              child: Center(  // Center the text inside the container
+                child: Text(
+                  'Hi ! Priyal',
+                  style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.06), // Dynamic font size
+                ),
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                // Handle profile button press
+              },
+              icon: Icon(Icons.person_outline, color: Colors.black, size: screenWidth * 0.08), // Dynamic icon size
+            )
           ],
         ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Image of the character/lady
+          // Lottie animation container
           Container(
-            height: 200,
-            child: Lottie.asset('assets/animations/Mainpage1.json'), // Ensure you have this image in the assets
+            height: screenHeight * 0.25, // 25% of the screen height
+            child: Lottie.asset('assets/animations/Mainpage1.json'), // Ensure you have this animation in the assets
           ),
-          SizedBox(height: 30),
-          
-          // Row with buttons for Quiz, Modulas, Experiments, and Notes
+          SizedBox(height: screenHeight * 0.03), // 3% of screen height
+
+          // First row with buttons (Quiz, Modulas)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -65,11 +63,11 @@ class MainPage extends StatelessWidget {
                     },
                     child: Image.asset(
                       'assets/images/quiz.png', // Quiz image
-                      height: 80,
+                      height: screenHeight * 0.1, // 10% of the screen height
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text('Quiz', style: TextStyle(fontSize: 16, color: Colors.black)),
+                  SizedBox(height: screenHeight * 0.01), // 1% of screen height
+                  Text('Quiz', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
                 ],
               ),
 
@@ -82,17 +80,18 @@ class MainPage extends StatelessWidget {
                     },
                     child: Image.asset(
                       'assets/images/modulas.png', // Modulas image
-                      height: 80,
+                      height: screenHeight * 0.1, // 10% of the screen height
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text('Modulas', style: TextStyle(fontSize: 16, color: Colors.black)),
+                  SizedBox(height: screenHeight * 0.01), // 1% of screen height
+                  Text('Modulas', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.02), // 2% of screen height
 
+          // Second row with buttons (Experiments, Notes)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -105,11 +104,11 @@ class MainPage extends StatelessWidget {
                     },
                     child: Image.asset(
                       'assets/images/experiments.png', // Experiments image
-                      height: 80,
+                      height: screenHeight * 0.1, // 10% of the screen height
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text('Experiments', style: TextStyle(fontSize: 16, color: Colors.black)),
+                  SizedBox(height: screenHeight * 0.01), // 1% of screen height
+                  Text('Experiments', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
                 ],
               ),
 
@@ -119,16 +118,14 @@ class MainPage extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       // Handle notes button press
-
-                      
                     },
                     child: Image.asset(
                       'assets/images/notes.png', // Notes image
-                      height: 80,
+                      height: screenHeight * 0.1, // 10% of the screen height
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text('Notes', style: TextStyle(fontSize: 16, color: Colors.black)),
+                  SizedBox(height: screenHeight * 0.01), // 1% of screen height
+                  Text('Notes', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
                 ],
               ),
             ],
