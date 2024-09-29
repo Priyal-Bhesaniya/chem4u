@@ -18,7 +18,7 @@ class MainPage extends StatelessWidget {
           children: [
             Container(
               height: screenHeight * 0.1, // 10% of the screen height
-              width: screenWidth * 0.4,   // 40% of the screen width
+              width: screenWidth * 0.6,   // 40% of the screen width
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Color.fromARGB(255, 104, 181, 198),
@@ -84,7 +84,7 @@ class MainPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                  Text('Modulas', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black)),
+                  Text('Modulas', style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black,fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
