@@ -17,6 +17,9 @@ class MainPage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color:  Color.fromARGB(255, 104, 181, 198),
+                border: Border.all(color: Colors.black),
+                
+                
                 
               ),
               child: Text(
