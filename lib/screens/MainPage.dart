@@ -28,7 +28,7 @@ class MainPage extends StatelessWidget {
     ),
   ),
 )
-
+,
             //Icon(Icons.person_outline, color: Colors.black, size: 30),
             IconButton(onPressed: (){
               // Navigator.push(
