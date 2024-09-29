@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 
 class MainPage extends StatelessWidget {
@@ -42,7 +43,7 @@ class MainPage extends StatelessWidget {
           // Image of the character/lady
           Container(
             height: 200,
-            child: Image.asset('assets/images/lady.png'), // Ensure you have this image in the assets
+            child: Lottie.asset('assets/animations/Mainpage1.json'), // Ensure you have this image in the assets
           ),
           SizedBox(height: 30),
           
