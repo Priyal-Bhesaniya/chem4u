@@ -78,13 +78,13 @@ class LoginPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    // // Handle login action
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => MainPage(), // Replace with your next page widget
-                    //   ),
-                    // );
+                    // Handle login action
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainPage(), // Replace with your next page widget
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF2FA0B9), // Button color

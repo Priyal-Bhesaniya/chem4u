@@ -25,12 +25,12 @@ class MainPage extends StatelessWidget {
             ),
             //Icon(Icons.person_outline, color: Colors.black, size: 30),
             IconButton(onPressed: (){
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  ProfileScreen(), // Replace with your next page widget
-                  ),
-                );
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) =>  ProfileScreen(), // Replace with your next page widget
+              //     ),
+              //   );
 
             }, icon: Icon(Icons.person_outline, color: Colors.black, size:30))
           ],
