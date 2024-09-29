@@ -31,7 +31,7 @@ class _LoadingPageState extends State<LoadingPage> {
           children: [
             // Lottie animation
             Lottie.asset(
-              'assets/animation/lodingpage1.json', // Replace with your Lottie animation path
+              'assets/animations/lodingpage1.json', // Replace with your Lottie animation path
               height: 200,
             ),
             SizedBox(height: 20),
