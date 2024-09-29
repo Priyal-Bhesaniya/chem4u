@@ -1,4 +1,5 @@
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
+import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 import 'package:flutter/material.dart';
 // import 'package:main_flutter_project/screens/AndroidLarge3.dart';
 // import 'package:main_flutter_project/screens/SignUpPage.dart';
