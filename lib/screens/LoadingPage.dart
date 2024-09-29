@@ -1,6 +1,6 @@
 import 'package:chemlab_flutter_project/screens/HomePage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:lottie/lottie.dart';
 
 
 class LoadingPage extends StatefulWidget {
