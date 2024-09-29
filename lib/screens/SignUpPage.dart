@@ -1,6 +1,6 @@
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:main_flutter_project/screens/AndroidLarge3.dart';
+
 
 class SignUpPage extends StatelessWidget {
   @override
