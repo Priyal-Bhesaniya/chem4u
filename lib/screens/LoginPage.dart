@@ -1,7 +1,8 @@
+import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 // import 'package:main_flutter_project/screens/MainPage.dart';
-// import 'package:main_flutter_project/screens/SignUpPage.dart'; // Import the page where you want to navigate
+ // Import the page where you want to navigate
 
 class LoginPage extends StatelessWidget {
   @override
