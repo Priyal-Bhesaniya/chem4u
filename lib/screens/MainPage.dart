@@ -27,12 +27,18 @@ class MainPage extends StatelessWidget {
               child: Center(  // Center the text inside the container
                 child: Text(
                   'Hi ! Priyal',
-                  style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.06), // Dynamic font size
+                  style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.06,fontWeight: FontWeight.bold), // Dynamic font size
                 ),
               ),
             ),
             IconButton(
               onPressed: () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  ProfilePage(), // Replace with your next page widget
+                  ),
+                );
                 // Handle profile button press
               },
               icon: Icon(Icons.person_outline, color: Colors.black, size: screenWidth * 0.08), // Dynamic icon size
