@@ -30,12 +30,12 @@ class HomePage extends StatelessWidget {
                 SizedBox(height: 20),
                ElevatedButton(
   onPressed: () {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => LoginPage(), // Replace with your next page widget
-    //   ),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(), // Replace with your next page widget
+      ),
+    );
   },
   style: ElevatedButton.styleFrom(
     backgroundColor: Color.fromARGB(255, 124, 177, 189), // Button background color
