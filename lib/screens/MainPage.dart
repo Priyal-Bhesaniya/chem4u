@@ -14,19 +14,21 @@ class MainPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color:  Color.fromARGB(255, 104, 181, 198),
-                border: Border.all(color: Colors.black),
-                
-                
-                
-              ),
-              child: Text(
-                'Hi ! Priyal',
-                style: TextStyle(color: Colors.black, fontSize: 24),
-              ),
-            ),
+  height: 100, // Set the desired height
+  width: 200,  // Set the desired width
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    color: Color.fromARGB(255, 104, 181, 198),
+    border: Border.all(color: Colors.black),
+  ),
+  child: Center(  // Center the text inside the container
+    child: Text(
+      'Hi ! Priyal',
+      style: TextStyle(color: Colors.black, fontSize: 24),
+    ),
+  ),
+)
+
             //Icon(Icons.person_outline, color: Colors.black, size: 30),
             IconButton(onPressed: (){
               // Navigator.push(
