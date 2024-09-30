@@ -24,10 +24,12 @@ class ExperimentPage extends StatelessWidget {
       ),
 
       body: Container(
+         margin: EdgeInsets.all(16.0), 
+        height: 90,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/experiments.png"), // Add your background image
-            fit: BoxFit.cover,
+            
           ),
         ),
     ));
