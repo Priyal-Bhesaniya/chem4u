@@ -1,5 +1,5 @@
 import 'package:chemlab_flutter_project/screens/ExperimentPage.dart';
-import 'package:chemlab_flutter_project/screens/LoginPage.dart';
+
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -12,7 +12,7 @@ class MainPage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     // Define scaling factors for different screen sizes
-    double textScale = MediaQuery.of(context).textScaleFactor;  // Text scale based on system settings
+// Text scale based on system settings
 
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 139, 205, 220),  // Background color
