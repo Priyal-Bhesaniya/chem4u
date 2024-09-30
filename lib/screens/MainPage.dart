@@ -1,3 +1,4 @@
+import 'package:chemlab_flutter_project/screens/ExperimentPage.dart';
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +137,7 @@ class MainPage extends StatelessWidget {
                        Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  LoginPage(),),);
+                    builder: (context) =>  ExperimentPage(),),);
                         // Handle experiments button press
                       },
                       child: Image.asset(
