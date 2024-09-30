@@ -1,3 +1,4 @@
+import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,7 +8,7 @@ class ExperimentPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Experiment"),
-        backgroundColor: const Color.fromARGB(255, 116, 169, 193),
+        backgroundColor: Color.fromARGB(255, 104, 181, 198),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -16,8 +17,15 @@ class ExperimentPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_circle),
+            
+            icon: const Icon(Icons.person_outline,size: 30,),
             onPressed: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute( builder: (context) => ProfilePage(),)
+                // Replace with your profile page widget
+              );
               // Handle profile navigation or action here
             },
           ),
