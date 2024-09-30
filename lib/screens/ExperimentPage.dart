@@ -63,6 +63,79 @@ class ExperimentPage extends StatelessWidget {
               ),
             ),
           ),
+
+
+            SizedBox(height: 5),
+
+          Container(
+            width: 300,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color:  Color.fromARGB(255, 104, 181, 198),
+            ),
+            margin: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                "Experiment 1",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+
+            SizedBox(height: 5),
+
+          Container(
+            width: 300,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color:  Color.fromARGB(255, 104, 181, 198),
+            ),
+            margin: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                "Experiment 1",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+
+            SizedBox(height: 5),
+
+          Container(
+            width: 300,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color:  Color.fromARGB(255, 104, 181, 198),
+            ),
+            margin: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                "Experiment 1",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+
+            SizedBox(height: 5),
+
+          Container(
+            width: 300,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color:  Color.fromARGB(255, 104, 181, 198),
+            ),
+            margin: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                "Experiment 1",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
         ],
       ));
 
