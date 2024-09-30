@@ -30,7 +30,7 @@ class ExperimentPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/background_chemistry.png"), // Add your background image
+            image: AssetImage("assets/images/experiments.png"), // Add your background image
             fit: BoxFit.cover,
           ),
         ),
@@ -44,6 +44,7 @@ class ExperimentPage extends StatelessWidget {
               width: screenWidth * 0.3,
             ),
             SizedBox(height: screenHeight * 0.03),
+          
             Expanded(
               child: ListView(
                 children: [

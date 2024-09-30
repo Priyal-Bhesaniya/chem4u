@@ -79,7 +79,7 @@
 
 
 import 'package:chemlab_flutter_project/screens/ExperimentPage.dart';
-import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
+// import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
 import 'package:flutter/material.dart';
 
 
