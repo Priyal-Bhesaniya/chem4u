@@ -132,7 +132,10 @@ class MainPage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        
+                       Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  LoginPage(),),),
                         // Handle experiments button press
                       },
                       child: Image.asset(
