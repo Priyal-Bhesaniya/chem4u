@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ExperimentPage extends StatelessWidget {
   @override
@@ -23,16 +24,36 @@ class ExperimentPage extends StatelessWidget {
         ],
       ),
 
-      body: Container(
-         color: Color.fromARGB(255, 104, 181, 198),
-         margin: EdgeInsets.all(16.0), 
-        height: 90,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/experiments.png"), // Add your background image
+      body: Column(
+        children: [
+          Container(
             
+             margin: EdgeInsets.all(16.0), 
+            height: 90,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/experiments.png"), // Add your background image
+                
+              ),
+            ),
+              ),
+
+          SizedBox(height: 30),
+
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color:  Color.fromARGB(255, 104, 181, 198),
+            ),
+            margin: EdgeInsets.all(16.0),
+            child: Text(
+              "Experiment 1",
+              style: TextStyle(fontSize: 20),
+            ),
           ),
-        ),
-    ));
+        ],
+      ));
+
+    
   }
 }
