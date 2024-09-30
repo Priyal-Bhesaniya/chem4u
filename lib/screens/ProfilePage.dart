@@ -59,10 +59,11 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-               // Button color
+              backgroundColor: Color(0xFF2FA0B9), // Button color
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
+                  
                   
                 ),
               ),
@@ -105,7 +106,7 @@ class ProfileTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+       color: Color.fromARGB(255, 104, 181, 198),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey),
       ),
