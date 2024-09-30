@@ -27,7 +27,7 @@ class MainPage extends StatelessWidget {
               ),
               child: Center(  // Center the text inside the container
                 child: Text(
-                  'Hi !',
+                  'Hi Priyal !',
                   style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.06,fontWeight: FontWeight.bold), // Dynamic font size
                 ),
               ),
