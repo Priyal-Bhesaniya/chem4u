@@ -4,55 +4,109 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFB3E5FC), // Light blue background color
       appBar: AppBar(
-        title: Text('Your Profile'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            // Implement your navigation logic here (e.g., Navigator.pop(context))
+             Navigator.pop(context);// Back button functionality
           },
         ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 50.0,
-              // Replace with your actual profile image or a placeholder
-              backgroundImage: AssetImage('assets/your_profile_image.png'),
+              radius: 40,
+              backgroundColor: Colors.grey[300],
+              child: Icon(
+                Icons.person,
+                size: 60,
+                color: Colors.black,
+              ),
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 20),
             Text(
-              'Priyal Bhesaniya',
+              "Your Profile",
               style: TextStyle(
-                fontSize: 24.0,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 10.0),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Password',
-                suffixIcon: Icon(Icons.visibility_off),
-              ),
+            SizedBox(height: 20),
+            ProfileTextField(
+              hintText: 'Priyal Bhesaniya',
+              icon: Icons.person,
+            ),
+            SizedBox(height: 10),
+            ProfileTextField(
+              hintText: '********',
+              icon: Icons.visibility,
               obscureText: true,
             ),
-            SizedBox(height: 10.0),
-            Text(
-              'pbhesaniya373@rku.ac.in',
-              style: TextStyle(
-                fontSize: 16.0,
+            SizedBox(height: 10),
+            ProfileTextField(
+              hintText: 'pbhesaniya373@rku.ac.in',
+              icon: Icons.email,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+               // Button color
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                // Log out button functionality
+              },
+              child: Text(
+                'Log Out',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
               ),
             ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                // Implement your logout logic here (e.g., Navigator.pushReplacementNamed(context, '/login'))
-              },
-              child: Text('Log Out'),
-            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileTextField extends StatelessWidget {
+  final String hintText;
+  final IconData icon;
+  final bool obscureText;
+
+  ProfileTextField({
+    required this.hintText,
+    required this.icon,
+    this.obscureText = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: TextField(
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          hintText: hintText,
+          border: InputBorder.none,
+          prefixIcon: Icon(icon, color: Colors.black),
         ),
       ),
     );
