@@ -5,7 +5,7 @@ class Module1Page extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Module 1 Definition"),
+        title: const Text("Module 1"),
         backgroundColor: Color.fromARGB(255, 104, 181, 198),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -25,9 +25,12 @@ class Module1Page extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              "This is where you will provide the definition and details regarding Module 1. You can add more information, examples, or any relevant content.",
+              "Try the Briggs-Rauscher Oscillating Clock Reaction  The Oscillating Clock or Briggs-Rauscher reaction changes color from clear to amber to blue. The reaction cycles between colors for a few minutes, eventually turning blue-black.",
+            
               style: TextStyle(fontSize: 18),
             ),
+            SizedBox(height: 10),
+            Text("Solution A Add 43 g potassium iodate (KIO3) to ~800 mL distilled water. Stir in 4.5 mL sulfuric acid (H2SO4). Continue stirring until the potassium iodate is dissolved. Dilute to 1 L."),
             // You can add more content here
           ],
         ),
