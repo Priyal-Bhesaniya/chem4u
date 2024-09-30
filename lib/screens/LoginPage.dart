@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
+      
       backgroundColor: Color.fromARGB(255, 139, 205, 220), // Light blue background color
       body: Center(
         child: SingleChildScrollView(
