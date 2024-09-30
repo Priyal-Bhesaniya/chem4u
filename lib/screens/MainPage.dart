@@ -1,4 +1,5 @@
 import 'package:chemlab_flutter_project/screens/ExperimentPage.dart';
+import 'package:chemlab_flutter_project/screens/NotesPage.dart';
 
 
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
@@ -163,6 +164,11 @@ class MainPage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
+
+                            Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  Notespage(),),);
                         // Handle notes button press
                       },
                       child: Image.asset(
