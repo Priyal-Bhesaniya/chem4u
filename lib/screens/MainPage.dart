@@ -4,6 +4,7 @@ import 'package:chemlab_flutter_project/screens/NotesPage.dart';
 
 
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
+import 'package:chemlab_flutter_project/screens/Qize.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -82,7 +83,11 @@ class MainPage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QuizePage(),
+                          ),);
                         // Handle quiz button press
                       },
                       child: Image.asset(
