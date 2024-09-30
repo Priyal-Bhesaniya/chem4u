@@ -132,6 +132,7 @@ class MainPage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        
                         // Handle experiments button press
                       },
                       child: Image.asset(
