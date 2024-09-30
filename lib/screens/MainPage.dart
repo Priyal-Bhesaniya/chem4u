@@ -1,4 +1,5 @@
 import 'package:chemlab_flutter_project/screens/ExperimentPage.dart';
+import 'package:chemlab_flutter_project/screens/Moduals.dart';
 import 'package:chemlab_flutter_project/screens/NotesPage.dart';
 
 
@@ -72,7 +73,7 @@ class MainPage extends StatelessWidget {
             ),
             SizedBox(height: screenHeight * 0.03), // 3% of screen height
 
-            // First row with buttons (Quiz, Modulas)
+        
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -81,6 +82,7 @@ class MainPage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        
                         // Handle quiz button press
                       },
                       child: Image.asset(
@@ -105,6 +107,11 @@ class MainPage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModualsPage(),
+                          ),);
                         // Handle modulas button press
                       },
                       child: Image.asset(
