@@ -1,3 +1,4 @@
+import 'package:chemlab_flutter_project/screens/Module1Page.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +43,10 @@ class ModualsPage extends StatelessWidget {
         
             // Experiment buttons with navigation
             buildExperimentButton(context, "Modual 1", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Module1Page()),
+              ),
               // Navigate to Experiment 1 page
               print("Navigate to Experiment 1"); // Placeholder action
             }),
