@@ -1,4 +1,6 @@
+import 'package:chemlab_flutter_project/screens/DragAndDropQuizPage.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
+import 'package:chemlab_flutter_project/screens/QuizePage1.dart';
 import 'package:flutter/material.dart';
 
 class QuizePage extends StatelessWidget {
@@ -43,6 +45,10 @@ class QuizePage extends StatelessWidget {
             // Experiment buttons with navigation
             buildExperimentButton(context, "Quiz 1", () {
               // Navigate to Experiment 1 page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DragAndDropQuizPage()),
+              );
               print("Navigate to Experiment 1"); // Placeholder action
             }),
             SizedBox(height: 5),
