@@ -1,3 +1,4 @@
+import 'package:chemlab_flutter_project/screens/CleanNotesPage.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 
@@ -41,6 +42,10 @@ class Notespage extends StatelessWidget {
 
           // Experiment buttons with navigation
           buildExperimentButton(context, "Notes 1", () {
+ Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CleanNotesPage()),
+            );
             // Navigate to Experiment 1 page
             print("Navigate to Experiment 1"); // Placeholder action
           }),
