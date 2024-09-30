@@ -6,7 +6,7 @@ class QuizePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Moduals"),
+        title: const Text("Quiz"),
         backgroundColor: Color.fromARGB(255, 104, 181, 198),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -33,39 +33,39 @@ class QuizePage extends StatelessWidget {
             height: 90,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/modulas.png"), // Add your background image
+                image: AssetImage("assets/images/quiz.png"), // Add your background image
               ),
             ),
           ),
           SizedBox(height: 30),
 
           // Experiment buttons with navigation
-          buildExperimentButton(context, "Modual 1", () {
+          buildExperimentButton(context, "Quiz 1", () {
             // Navigate to Experiment 1 page
             print("Navigate to Experiment 1"); // Placeholder action
           }),
           SizedBox(height: 5),
-          buildExperimentButton(context, "Modual 2", () {
+          buildExperimentButton(context, "Quiz 2", () {
             // Navigate to Experiment 2 page
             print("Navigate to Experiment 2"); // Placeholder action
           }),
           SizedBox(height: 5),
-          buildExperimentButton(context, "Modual 3", () {
+          buildExperimentButton(context, "Quiz 3", () {
             // Navigate to Experiment 3 page
             print("Navigate to Experiment 3"); // Placeholder action
           }),
           SizedBox(height: 5),
-          buildExperimentButton(context, "Modual 4", () {
+          buildExperimentButton(context, "Quiz 4", () {
             // Navigate to Experiment 4 page
             print("Navigate to Experiment 4"); // Placeholder action
           }),
           SizedBox(height: 5),
-          buildExperimentButton(context, "Modual 5", () {
+          buildExperimentButton(context, "Quiz 5", () {
             // Navigate to Experiment 5 page
             print("Navigate to Experiment 5"); // Placeholder action
           }),
           SizedBox(height: 5),
-          buildExperimentButton(context, "Modual 6", () {
+          buildExperimentButton(context, "Quiz 6", () {
             // Navigate to Experiment 6 page
             print("Navigate to Experiment 6"); // Placeholder action
           }),
