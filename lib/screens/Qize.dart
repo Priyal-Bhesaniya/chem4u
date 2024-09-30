@@ -1,6 +1,6 @@
 import 'package:chemlab_flutter_project/screens/DragAndDropQuizPage.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
-import 'package:chemlab_flutter_project/screens/QuizePage1.dart';
+
 import 'package:flutter/material.dart';
 
 class QuizePage extends StatelessWidget {

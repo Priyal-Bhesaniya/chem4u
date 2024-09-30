@@ -1,3 +1,4 @@
+import 'package:chemlab_flutter_project/screens/EquipmentDragDropPage.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +43,10 @@ class ExperimentPage extends StatelessWidget {
 
             // Experiment buttons with navigation
             buildExperimentButton(context, "Experiment 1", () {
+                 Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EquipmentDragDropPage()),
+              );
               print("Navigate to Experiment 1"); // Placeholder action
             }),
             SizedBox(height: 5),
