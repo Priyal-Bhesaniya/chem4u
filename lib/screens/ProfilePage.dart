@@ -18,73 +18,75 @@ class ProfilePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.grey[300],
-              child: Icon(
-                Icons.person,
-                size: 60,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              "Your Profile",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 20),
-            ProfileTextField(
-              hintText: 'Priyal Bhesaniya',
-              icon: Icons.person,
-            ),
-            SizedBox(height: 10),
-            ProfileTextField(
-              hintText: '********',
-              icon: Icons.visibility,
-              obscureText: true,
-            ),
-            SizedBox(height: 10),
-            ProfileTextField(
-              hintText: 'pbhesaniya373@rku.ac.in',
-              icon: Icons.email,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF2FA0B9), // Button color
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  
-                  
-                ),
-              ),
-              onPressed: () {
-                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  LoginPage(),
-                  ),);
-                // Log out button functionality
-                
-              },
-              child: Text(
-                'Log Out',
-                style: TextStyle(
-                  fontSize: 18,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.grey[300],
+                child: Icon(
+                  Icons.person,
+                  size: 60,
                   color: Colors.black,
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              Text(
+                "Your Profile",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 20),
+              ProfileTextField(
+                hintText: 'Priyal Bhesaniya',
+                icon: Icons.person,
+              ),
+              SizedBox(height: 10),
+              ProfileTextField(
+                hintText: '********',
+                icon: Icons.visibility,
+                obscureText: true,
+              ),
+              SizedBox(height: 10),
+              ProfileTextField(
+                hintText: 'pbhesaniya373@rku.ac.in',
+                icon: Icons.email,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF2FA0B9), // Button color
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    
+                    
+                  ),
+                ),
+                onPressed: () {
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>  LoginPage(),
+                    ),);
+                  // Log out button functionality
+                  
+                },
+                child: Text(
+                  'Log Out',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
