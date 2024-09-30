@@ -1,3 +1,4 @@
+import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -62,10 +63,17 @@ class ProfilePage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
+                  
                 ),
               ),
               onPressed: () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  LoginPage(),
+                  ),);
                 // Log out button functionality
+                
               },
               child: Text(
                 'Log Out',
