@@ -77,7 +77,7 @@ class ExperimentPage extends StatelessWidget {
             margin: EdgeInsets.all(16.0),
             child: Center(
               child: Text(
-                "Experiment 1",
+                "Experiment 2",
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -95,7 +95,7 @@ class ExperimentPage extends StatelessWidget {
             margin: EdgeInsets.all(16.0),
             child: Center(
               child: Text(
-                "Experiment 1",
+                "Experiment 3",
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -113,7 +113,7 @@ class ExperimentPage extends StatelessWidget {
             margin: EdgeInsets.all(16.0),
             child: Center(
               child: Text(
-                "Experiment 1",
+                "Experiment 4",
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -131,11 +131,32 @@ class ExperimentPage extends StatelessWidget {
             margin: EdgeInsets.all(16.0),
             child: Center(
               child: Text(
-                "Experiment 1",
+                "Experiment 5",
                 style: TextStyle(fontSize: 20),
               ),
             ),
           ),
+            SizedBox(height: 5),
+
+          Container(
+            width: 300,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color:  Color.fromARGB(255, 104, 181, 198),
+            ),
+            margin: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                "Experiment 6",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+            SizedBox(height: 5),
+
+         
+          
         ],
       ));
 
