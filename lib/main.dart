@@ -78,7 +78,8 @@
 
 
 
-import 'package:chemlab_flutter_project/screens/ExperimentPage.dart';
+
+import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
 // import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
 import 'package:flutter/material.dart';
 
@@ -116,7 +117,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  ExperimentPage(),
+      home:  LoadingPage(),
     );
   }
 }

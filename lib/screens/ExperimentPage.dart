@@ -3,12 +3,7 @@ import 'package:flutter/material.dart';
 class ExperimentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Media query to get screen size
-    var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 139, 205, 220),
       appBar: AppBar(
         title: const Text("Experiment"),
         backgroundColor: const Color.fromARGB(255, 116, 169, 193),
@@ -22,11 +17,12 @@ class ExperimentPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.account_circle),
             onPressed: () {
-              // Navigate to profile or settings
+              // Handle profile navigation or action here
             },
           ),
         ],
       ),
+
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -34,58 +30,6 @@ class ExperimentPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SizedBox(height: screenHeight * 0.02),
-            Image.asset(
-              'assets/chemistry_icon.png', // Replace with your own image path
-              height: screenHeight * 0.15,
-              width: screenWidth * 0.3,
-            ),
-            SizedBox(height: screenHeight * 0.03),
-          
-            Expanded(
-              child: ListView(
-                children: [
-                  experimentButton("Experiment 1", screenHeight),
-                  experimentButton("Experiment 2", screenHeight),
-                  experimentButton("Experiment 3", screenHeight),
-                  experimentButton("Experiment 4", screenHeight),
-                  experimentButton("Experiment 5", screenHeight),
-                  
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget experimentButton(String text, double screenHeight) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-         // Button color
-          padding: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.03, horizontal: 10.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        onPressed: () {
-          // Add experiment navigation logic here
-        },
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.black, // Text color
-            fontSize: screenHeight * 0.025,
-          ),
-        ),
-      ),
-    );
+    ));
   }
 }
