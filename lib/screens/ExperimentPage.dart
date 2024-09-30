@@ -24,6 +24,7 @@ class ExperimentPage extends StatelessWidget {
       ),
 
       body: Container(
+         color: Color.fromARGB(255, 104, 181, 198),
          margin: EdgeInsets.all(16.0), 
         height: 90,
         decoration: BoxDecoration(
