@@ -8,9 +8,10 @@ class ExperimentPage extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 139, 205, 220),
       appBar: AppBar(
         title: const Text("Experiment"),
-        backgroundColor: Colors.lightBlue[100],
+        backgroundColor: const Color.fromARGB(255, 116, 169, 193),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -51,7 +52,7 @@ class ExperimentPage extends StatelessWidget {
                   experimentButton("Experiment 3", screenHeight),
                   experimentButton("Experiment 4", screenHeight),
                   experimentButton("Experiment 5", screenHeight),
-                  experimentButton("Experiment 6", screenHeight),
+                  
                 ],
               ),
             ),
