@@ -1,12 +1,12 @@
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 
-class SignUpPage extends StatefulWidget {
+class OtpVerificationPage extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _OtpVerificationPageState createState() => _OtpVerificationPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _OtpVerificationPageState extends State<OtpVerificationPage> {
   final TextEditingController _otpController = TextEditingController();
   String? _otpError;
 
@@ -20,7 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  // OTP validation
+  // OTP validation (6-digit number check)
   void _validateOTP() {
     String otp = _otpController.text;
     RegExp otpRegEx = RegExp(r'^\d{6}$'); // 6-digit OTP
@@ -38,12 +38,12 @@ class _SignUpPageState extends State<SignUpPage> {
     // Final validation when the button is pressed
     _validateOTP();
 
-    // If OTP is valid, navigate to the login page
+    // If OTP is valid, navigate to the login page or next verification step
     if (_otpError == null) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginPage(),
+          builder: (context) => LoginPage(), // Navigate to your next page
         ),
       );
     }
@@ -60,7 +60,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Scientist image at the top
+                // Display image or branding at the top
                 CircleAvatar(
                   radius: 100,
                   backgroundImage: AssetImage('assets/images/Login_page.png'),
@@ -68,9 +68,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 SizedBox(height: 30),
 
-                // "Enter OTP" text
+                // "OTP Verification" text
                 Text(
-                  'Enter OTP',
+                  'OTP Verification',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 SizedBox(height: 30),
 
-                // Submit button
+                // Submit button for OTP verification
                 ElevatedButton(
                   onPressed: _validateInput,
                   style: ElevatedButton.styleFrom(
@@ -116,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Submit',
+                        'Verify OTP',
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                       SizedBox(width: 10),

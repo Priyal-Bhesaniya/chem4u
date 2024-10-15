@@ -1,4 +1,5 @@
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
+import 'package:chemlab_flutter_project/screens/Otp_varification.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -86,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginPage(),
+          builder: (context) =>OtpVerificationPage(),
         ),
       );
     }
