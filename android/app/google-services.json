@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "132699204875",
+    "project_id": "chem4u-796f6",
+    "storage_bucket": "chem4u-796f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132699204875:android:a6969c84d162cc072d460e",
+        "android_client_info": {
+          "package_name": "com.example.chemlab_flutter_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFh1y3i9eQ7NJ27QRDdNWDwdUhzRJdnS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

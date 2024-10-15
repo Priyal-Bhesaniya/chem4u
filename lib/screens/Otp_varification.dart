@@ -1,49 +1,92 @@
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 
-class OtpVerificationPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  _OtpVerificationPageState createState() => _OtpVerificationPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _OtpVerificationPageState extends State<OtpVerificationPage> {
-  final TextEditingController _otpController = TextEditingController();
-  String? _otpError;
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
+  String? _usernameError;
+  String? _passwordError;
+  String? _emailError;
 
   @override
   void initState() {
     super.initState();
 
-    // Add listener for real-time OTP validation
-    _otpController.addListener(() {
-      _validateOTP();
+    // Add listeners for real-time validation
+    _usernameController.addListener(() {
+      _validateUsername();
+    });
+
+    _passwordController.addListener(() {
+      _validatePassword();
+    });
+
+    _emailController.addListener(() {
+      _validateEmail();
     });
   }
 
-  // OTP validation (6-digit number check)
-  void _validateOTP() {
-    String otp = _otpController.text;
-    RegExp otpRegEx = RegExp(r'^\d{6}$'); // 6-digit OTP
+  // Username validation
+  void _validateUsername() {
+    String username = _usernameController.text;
+    RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
+    
+    setState(() {
+      if (!usernameRegEx.hasMatch(username)) {
+        _usernameError = "Username must be alphanumeric!";
+      } else {
+        _usernameError = null;
+      }
+    });
+  }
+
+  // Password validation
+  void _validatePassword() {
+    String password = _passwordController.text;
+    RegExp passwordRegEx = RegExp(r'^.{6,}$'); // Minimum 6 characters
 
     setState(() {
-      if (!otpRegEx.hasMatch(otp)) {
-        _otpError = "OTP must be 6 digits!";
+      if (!passwordRegEx.hasMatch(password)) {
+        _passwordError = "Password must be at least 6 characters!";
       } else {
-        _otpError = null;
+        _passwordError = null;
+      }
+    });
+  }
+
+  // Email validation
+  void _validateEmail() {
+    String email = _emailController.text;
+    RegExp emailRegEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'); // Simple email validation
+
+    setState(() {
+      if (!emailRegEx.hasMatch(email)) {
+        _emailError = "Enter a valid email!";
+      } else {
+        _emailError = null;
       }
     });
   }
 
   void _validateInput() {
-    // Final validation when the button is pressed
-    _validateOTP();
+    // Final validation when sign-up button is pressed
+    _validateUsername();
+    _validatePassword();
+    _validateEmail();
 
-    // If OTP is valid, navigate to the login page or next verification step
-    if (_otpError == null) {
+    // If all inputs are valid, navigate to the login page
+    if (_usernameError == null && _passwordError == null && _emailError == null) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginPage(), // Navigate to your next page
+          builder: (context) => LoginPage(),
         ),
       );
     }
@@ -60,7 +103,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Display image or branding at the top
+                // Scientist image at the top
                 CircleAvatar(
                   radius: 100,
                   backgroundImage: AssetImage('assets/images/Login_page.png'),
@@ -68,9 +111,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 ),
                 SizedBox(height: 30),
 
-                // "OTP Verification" text
+                // "Sign Up" text
                 Text(
-                  'OTP Verification',
+                  'Sign up',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -79,30 +122,65 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 ),
                 SizedBox(height: 20),
 
-                // OTP input field with validation
+                // Username input field with validation
                 Container(
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 104, 181, 198),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
-                    controller: _otpController,
-                    keyboardType: TextInputType.number,
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person, color: Colors.black),
+                      hintText: 'Username',
+                      errorText: _usernameError,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+
+                // Password input field with validation
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 104, 181, 198),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextField(
+                    controller: _passwordController,
+                    obscureText: true,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock, color: Colors.black),
-                      hintText: 'Enter OTP',
-                      errorText: _otpError,
+                      hintText: 'Password',
+                      errorText: _passwordError,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: 10,
-                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+
+                // Email input field with validation
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 104, 181, 198),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email, color: Colors.black),
+                      hintText: 'E-mail',
+                      errorText: _emailError,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     ),
                   ),
                 ),
                 SizedBox(height: 30),
 
-                // Submit button for OTP verification
+                // Sign-up button
                 ElevatedButton(
                   onPressed: _validateInput,
                   style: ElevatedButton.styleFrom(
@@ -116,7 +194,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Verify OTP',
+                        'Sign up',
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                       SizedBox(width: 10),
@@ -134,7 +212,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
   @override
   void dispose() {
-    _otpController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 }
