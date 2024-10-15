@@ -7,82 +7,39 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-
-  String? _usernameError;
-  String? _passwordError;
-  String? _emailError;
+  final TextEditingController _otpController = TextEditingController();
+  String? _otpError;
 
   @override
   void initState() {
     super.initState();
 
-    // Add listeners for real-time validation
-    _usernameController.addListener(() {
-      _validateUsername();
-    });
-
-    _passwordController.addListener(() {
-      _validatePassword();
-    });
-
-    _emailController.addListener(() {
-      _validateEmail();
+    // Add listener for real-time OTP validation
+    _otpController.addListener(() {
+      _validateOTP();
     });
   }
 
-  // Username validation
-  void _validateUsername() {
-    String username = _usernameController.text;
-    RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
-    
-    setState(() {
-      if (!usernameRegEx.hasMatch(username)) {
-        _usernameError = "Username must be alphanumeric!";
-      } else {
-        _usernameError = null;
-      }
-    });
-  }
-
-  // Password validation
-  void _validatePassword() {
-    String password = _passwordController.text;
-    RegExp passwordRegEx = RegExp(r'^.{6,}$'); // Minimum 6 characters
+  // OTP validation
+  void _validateOTP() {
+    String otp = _otpController.text;
+    RegExp otpRegEx = RegExp(r'^\d{6}$'); // 6-digit OTP
 
     setState(() {
-      if (!passwordRegEx.hasMatch(password)) {
-        _passwordError = "Password must be at least 6 characters!";
+      if (!otpRegEx.hasMatch(otp)) {
+        _otpError = "OTP must be 6 digits!";
       } else {
-        _passwordError = null;
-      }
-    });
-  }
-
-  // Email validation
-  void _validateEmail() {
-    String email = _emailController.text;
-    RegExp emailRegEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'); // Simple email validation
-
-    setState(() {
-      if (!emailRegEx.hasMatch(email)) {
-        _emailError = "Enter a valid email!";
-      } else {
-        _emailError = null;
+        _otpError = null;
       }
     });
   }
 
   void _validateInput() {
-    // Final validation when sign-up button is pressed
-    _validateUsername();
-    _validatePassword();
-    _validateEmail();
+    // Final validation when the button is pressed
+    _validateOTP();
 
-    // If all inputs are valid, navigate to the login page
-    if (_usernameError == null && _passwordError == null && _emailError == null) {
+    // If OTP is valid, navigate to the login page
+    if (_otpError == null) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -111,9 +68,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 SizedBox(height: 30),
 
-                // "Sign Up" text
+                // "Enter OTP" text
                 Text(
-                  'Sign up',
+                  'Enter OTP',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -122,65 +79,30 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 SizedBox(height: 20),
 
-                // Username input field with validation
+                // OTP input field with validation
                 Container(
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 104, 181, 198),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.person, color: Colors.black),
-                      hintText: 'Username',
-                      errorText: _usernameError,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15),
-
-                // Password input field with validation
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 104, 181, 198),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextField(
-                    controller: _passwordController,
-                    obscureText: true,
+                    controller: _otpController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock, color: Colors.black),
-                      hintText: 'Password',
-                      errorText: _passwordError,
+                      hintText: 'Enter OTP',
+                      errorText: _otpError,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15),
-
-                // Email input field with validation
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 104, 181, 198),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.email, color: Colors.black),
-                      hintText: 'E-mail',
-                      errorText: _emailError,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 10,
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 30),
 
-                // Sign-up button
+                // Submit button
                 ElevatedButton(
                   onPressed: _validateInput,
                   style: ElevatedButton.styleFrom(
@@ -194,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Sign up',
+                        'Submit',
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                       SizedBox(width: 10),
@@ -212,9 +134,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _emailController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
 }
