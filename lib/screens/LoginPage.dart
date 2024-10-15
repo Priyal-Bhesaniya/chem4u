@@ -2,16 +2,80 @@ import 'package:chemlab_flutter_project/screens/MainPage.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-// import 'package:main_flutter_project/screens/MainPage.dart';
- // Import the page where you want to navigate
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String? _usernameError;
+  String? _passwordError;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Add listeners to controllers for real-time validation
+    _usernameController.addListener(() {
+      _validateUsername();
+    });
+
+    _passwordController.addListener(() {
+      _validatePassword();
+    });
+  }
+
+  // Validate username in real-time
+  void _validateUsername() {
+    String username = _usernameController.text;
+    RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
+    
+    setState(() {
+      if (!usernameRegEx.hasMatch(username)) {
+        _usernameError = "Username must be alphanumeric!";
+      } else {
+        _usernameError = null;
+      }
+    });
+  }
+
+  // Validate password in real-time
+  void _validatePassword() {
+    String password = _passwordController.text;
+    RegExp passwordRegEx = RegExp(r'^.{6,}$'); // Password must be at least 6 characters
+
+    setState(() {
+      if (!passwordRegEx.hasMatch(password)) {
+        _passwordError = "Password must be at least 6 characters!";
+      } else {
+        _passwordError = null;
+      }
+    });
+  }
+
+  void _validateInput() {
+    // Final validation when login button is pressed
+    _validateUsername();
+    _validatePassword();
+
+    // Proceed only if there are no errors
+    if (_usernameError == null && _passwordError == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainPage(), // Replace with your next page widget
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
-      
-      backgroundColor: Color.fromARGB(255, 139, 205, 220), // Light blue background color
+      backgroundColor: Color.fromARGB(255, 139, 205, 220),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -48,9 +112,14 @@ class LoginPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     hintText: 'Username',
-                    border: InputBorder.none,
+                    errorText: _usernameError, // Display error message
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: _usernameError == null ? Colors.transparent : Colors.red),
+                    ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 15),
                     prefixIcon: Icon(Icons.person),
                   ),
@@ -65,10 +134,15 @@ class LoginPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
-                    border: InputBorder.none,
+                    errorText: _passwordError, // Display error message
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: _passwordError == null ? Colors.transparent : Colors.red),
+                    ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 15),
                     prefixIcon: Icon(Icons.lock),
                   ),
@@ -80,17 +154,9 @@ class LoginPage extends StatelessWidget {
                 width: 290,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Handle login action
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MainPage(), // Replace with your next page widget
-                      ),
-                    );
-                  },
+                  onPressed: _validateInput,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF2FA0B9), // Button color
+                    backgroundColor: Color(0xFF2FA0B9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -134,11 +200,10 @@ class LoginPage extends StatelessWidget {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          // Navigate to the SignUpPage when "Create now" is clicked
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignUpPage(), // Replace with your sign-up page
+                              builder: (context) => SignUpPage(),
                             ),
                           );
                         },
@@ -151,5 +216,12 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

@@ -13,7 +13,7 @@ class _LoadingPageState extends State<LoadingPage> {
   void initState() {
     super.initState();
     // Navigate to your next page after 2-3 seconds
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 4), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()), // Use your existing page here
