@@ -1,6 +1,4 @@
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';  // Firebase Auth
-import 'package:firebase_database/firebase_database.dart';  // Firebase Realtime Database
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -9,40 +7,13 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-
   String? _usernameError;
   String? _passwordError;
   String? _emailError;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();  // Realtime Database reference
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Add listeners for real-time validation
-    _usernameController.addListener(() {
-      _validateUsername();
-    });
-
-    _passwordController.addListener(() {
-      _validatePassword();
-    });
-
-    _emailController.addListener(() {
-      _validateEmail();
-    });
-  }
-
   // Username validation
-  void _validateUsername() {
-    String username = _usernameController.text;
+  void _validateUsername(String username) {
     RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
-    
     setState(() {
       if (!usernameRegEx.hasMatch(username)) {
         _usernameError = "Username must be alphanumeric!";
@@ -53,10 +24,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   // Password validation
-  void _validatePassword() {
-    String password = _passwordController.text;
+  void _validatePassword(String password) {
     RegExp passwordRegEx = RegExp(r'^.{6,}$'); // Minimum 6 characters
-
     setState(() {
       if (!passwordRegEx.hasMatch(password)) {
         _passwordError = "Password must be at least 6 characters!";
@@ -67,10 +36,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   // Email validation
-  void _validateEmail() {
-    String email = _emailController.text;
+  void _validateEmail(String email) {
     RegExp emailRegEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'); // Simple email validation
-
     setState(() {
       if (!emailRegEx.hasMatch(email)) {
         _emailError = "Enter a valid email!";
@@ -80,54 +47,29 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  Future<void> _signUp() async {
-    try {
-      // Create a new user with email and password
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      
-      User? user = userCredential.user;
-      
-      if (user != null) {
-        // Store additional user info (username) in Realtime Database
-        await _database.child("users").child(user.uid).set({
-          'username': _usernameController.text,
-          'email': _emailController.text,
-        });
-
-        // Navigate to login page
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LoginPage(),
-          ),
-        );
-      }
-    } catch (e) {
-      print('Sign-up error: $e');
-      // Display error message if sign-up fails
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to sign up: ${e.toString()}')),
-      );
-    }
-  }
-
-  void _validateInput() {
+  void _validateInput(String username, String password, String email) {
     // Final validation when sign-up button is pressed
-    _validateUsername();
-    _validatePassword();
-    _validateEmail();
+    _validateUsername(username);
+    _validatePassword(password);
+    _validateEmail(email);
 
-    // If all inputs are valid, proceed with the sign-up
+    // If all inputs are valid, navigate to the login page
     if (_usernameError == null && _passwordError == null && _emailError == null) {
-      _signUp();  // Call the sign-up function
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    String username = '';
+    String password = '';
+    String email = '';
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 139, 205, 220),
       body: Center(
@@ -163,7 +105,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
-                    controller: _usernameController,
+                    onChanged: (value) {
+                      username = value;
+                      _validateUsername(username);
+                    },
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.person, color: Colors.black),
                       hintText: 'Username',
@@ -182,8 +127,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
-                    controller: _passwordController,
                     obscureText: true,
+                    onChanged: (value) {
+                      password = value;
+                      _validatePassword(password);
+                    },
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock, color: Colors.black),
                       hintText: 'Password',
@@ -202,7 +150,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
-                    controller: _emailController,
+                    onChanged: (value) {
+                      email = value;
+                      _validateEmail(email);
+                    },
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email, color: Colors.black),
                       hintText: 'E-mail',
@@ -216,7 +167,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Sign-up button
                 ElevatedButton(
-                  onPressed: _validateInput,
+                  onPressed: () {
+                    _validateInput(username, password, email);
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 60),
                     backgroundColor: Color(0xFF2FA0B9),
@@ -242,13 +195,5 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _emailController.dispose();
-    super.dispose();
   }
 }
