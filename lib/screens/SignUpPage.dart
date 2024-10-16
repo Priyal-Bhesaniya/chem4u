@@ -1,7 +1,6 @@
-
-
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';  // Firebase Auth
+import 'package:firebase_database/firebase_database.dart';  // Firebase Realtime Database
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -17,6 +16,9 @@ class _SignUpPageState extends State<SignUpPage> {
   String? _usernameError;
   String? _passwordError;
   String? _emailError;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();  // Realtime Database reference
 
   @override
   void initState() {
@@ -78,20 +80,49 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
+  Future<void> _signUp() async {
+    try {
+      // Create a new user with email and password
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      
+      User? user = userCredential.user;
+      
+      if (user != null) {
+        // Store additional user info (username) in Realtime Database
+        await _database.child("users").child(user.uid).set({
+          'username': _usernameController.text,
+          'email': _emailController.text,
+        });
+
+        // Navigate to login page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Sign-up error: $e');
+      // Display error message if sign-up fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to sign up: ${e.toString()}')),
+      );
+    }
+  }
+
   void _validateInput() {
     // Final validation when sign-up button is pressed
     _validateUsername();
     _validatePassword();
     _validateEmail();
 
-    // If all inputs are valid, navigate to the login page
+    // If all inputs are valid, proceed with the sign-up
     if (_usernameError == null && _passwordError == null && _emailError == null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ),
-      );
+      _signUp();  // Call the sign-up function
     }
   }
 
