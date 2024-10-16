@@ -1,9 +1,10 @@
+import 'package:chemlab_flutter_project/Repository/Authentication_Reppo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SignupPageController extends GetxController {
   // Singleton instance
-  static SignupPageController get instance => Get.find();
+  static SignupPageController get instance => Get.find(); // This works after Get.put() is called
 
   // TextEditingControllers
   final username = TextEditingController();
@@ -17,7 +18,8 @@ class SignupPageController extends GetxController {
 
   // Function to register user
   void registerUser(String email, String password) {
-    // Add logic to register user here, for example an API call
+    // Use AuthenticationRepository to register the user
+    AuthenticationRepository.instance.creatUserWithEmailAndPassword(email, password);
   }
 
   // Username validation

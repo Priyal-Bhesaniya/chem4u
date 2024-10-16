@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 
 class AuthenticationRepository extends GetxController {
-  static AuthenticationRepository get Instance => Get.find();
+  static AuthenticationRepository get instance => Get.find();
 
   final _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser ;
