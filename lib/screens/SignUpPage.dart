@@ -1,76 +1,19 @@
+import 'package:chemlab_flutter_project/Controller/Signup_page_controller.dart';
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+ // Import GetX package
 
-class SignUpPage extends StatefulWidget {
-  @override
-  _SignUpPageState createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
-  String? _usernameError;
-  String? _passwordError;
-  String? _emailError;
-
-  // Username validation
-  void _validateUsername(String username) {
-    RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
-    setState(() {
-      if (!usernameRegEx.hasMatch(username)) {
-        _usernameError = "Username must be alphanumeric!";
-      } else {
-        _usernameError = null;
-      }
-    });
-  }
-
-  // Password validation
-  void _validatePassword(String password) {
-    RegExp passwordRegEx = RegExp(r'^.{6,}$'); // Minimum 6 characters
-    setState(() {
-      if (!passwordRegEx.hasMatch(password)) {
-        _passwordError = "Password must be at least 6 characters!";
-      } else {
-        _passwordError = null;
-      }
-    });
-  }
-
-  // Email validation
-  void _validateEmail(String email) {
-    RegExp emailRegEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'); // Simple email validation
-    setState(() {
-      if (!emailRegEx.hasMatch(email)) {
-        _emailError = "Enter a valid email!";
-      } else {
-        _emailError = null;
-      }
-    });
-  }
-
-  void _validateInput(String username, String password, String email) {
-    // Final validation when sign-up button is pressed
-    _validateUsername(username);
-    _validatePassword(password);
-    _validateEmail(email);
-
-    // If all inputs are valid, navigate to the login page
-    if (_usernameError == null && _passwordError == null && _emailError == null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ),
-      );
-    }
-  }
+class SignUpPage extends StatelessWidget {
+  // Initialize the controller using Get.put()
+  final SignupPageController controller = Get.put(SignupPageController());
+  final _formKey  = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    String username = '';
-    String password = '';
-    String email = '';
-
     return Scaffold(
+      key:_formKey,
       backgroundColor: Color.fromARGB(255, 139, 205, 220),
       body: Center(
         child: SingleChildScrollView(
@@ -89,6 +32,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // "Sign Up" text
                 Text(
+                  
                   'Sign up',
                   style: TextStyle(
                     fontSize: 28,
@@ -104,17 +48,20 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Color.fromARGB(255, 104, 181, 198),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: TextField(
-                    onChanged: (value) {
-                      username = value;
-                      _validateUsername(username);
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.person, color: Colors.black),
-                      hintText: 'Username',
-                      errorText: _usernameError,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  child: Obx(
+                    () => TextField(
+                      controller: controller.username,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person, color: Colors.black),
+                        hintText: 'Username',
+                        errorText: controller.usernameError.value,
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      ),
+                      onChanged: (value) {
+                        controller.validateUsername(value);
+                      },
                     ),
                   ),
                 ),
@@ -126,18 +73,21 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Color.fromARGB(255, 104, 181, 198),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: TextField(
-                    obscureText: true,
-                    onChanged: (value) {
-                      password = value;
-                      _validatePassword(password);
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock, color: Colors.black),
-                      hintText: 'Password',
-                      errorText: _passwordError,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  child: Obx(
+                    () => TextField(
+                      controller: controller.password,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock, color: Colors.black),
+                        hintText: 'Password',
+                        errorText: controller.passwordError.value,
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      ),
+                      onChanged: (value) {
+                        controller.validatePassword(value);
+                      },
                     ),
                   ),
                 ),
@@ -149,17 +99,20 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Color.fromARGB(255, 104, 181, 198),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: TextField(
-                    onChanged: (value) {
-                      email = value;
-                      _validateEmail(email);
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.email, color: Colors.black),
-                      hintText: 'E-mail',
-                      errorText: _emailError,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  child: Obx(
+                    () => TextField(
+                      controller: controller.email,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email, color: Colors.black),
+                        hintText: 'E-mail',
+                        errorText: controller.emailError.value,
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      ),
+                      onChanged: (value) {
+                        controller.validateEmail(value);
+                      },
                     ),
                   ),
                 ),
@@ -168,10 +121,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 // Sign-up button
                 ElevatedButton(
                   onPressed: () {
-                    _validateInput(username, password, email);
+                   
+                    controller.registerUser(controller.email.text, controller.password.text);
+                    if (controller.isValid) {
+                      Get.to(LoginPage());
+                    }
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 60),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 60),
                     backgroundColor: Color(0xFF2FA0B9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
