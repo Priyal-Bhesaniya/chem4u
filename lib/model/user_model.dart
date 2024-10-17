@@ -9,7 +9,7 @@ class UserModel {
     this.id,
     this.Username,
     this.Password,
-    this.Email,
+    this.Email, required String email, required String username, required String password,
   });
 
   toJson(){
