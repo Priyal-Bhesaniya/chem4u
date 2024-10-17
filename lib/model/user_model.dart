@@ -11,4 +11,13 @@ class UserModel {
     this.Password,
     this.Email,
   });
+
+  tojoson(){
+    return {
+      'id': id,
+      'username': Username,
+      'password': Password,
+      'email': Email,
+    };
+  }
 }
