@@ -19,14 +19,16 @@ class SignupPageController extends GetxController {
   RxnString mobileNumberError = RxnString(null);  // New error message for mobile number
 
   // Function to register user
-  void registerUser(String email, String password) {
+ void registerUser(String email, String password, String mobileNumber) async {
+  try {
     // Use AuthenticationRepository to register the user
-    String? error = AuthenticationRepository.instance.creatUserWithEmailAndPassword(email, password) as String?;
-    if (error != null) {
-      Get.showSnackbar(GetSnackBar(message: error.toString()));
-    }
+    await AuthenticationRepository.instance.creatUserWithEmailAndPassword(email, password, mobileNumber);
+    // Navigate to the next page or show a success message if needed
+  } catch (error) {
+    // Handle the error and show a snackbar with the error message
+    Get.showSnackbar(GetSnackBar(message: error.toString(), duration: Duration(seconds: 2)));
   }
-
+}
   // Username validation
   void validateUsername(String value) {
     RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
