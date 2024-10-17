@@ -1,23 +1,22 @@
 class UserModel {
-  final String? id;
-  final String? Username;
-  final String? Password;
-  final String? Email;
+  String email;
+  String password;
+  String username;
+  String mobileNumber;  // Add mobile number field
 
-
-  const UserModel({
-    this.id,
-    this.Username,
-    this.Password,
-    this.Email, required String email, required String username, required String password,
+  UserModel({
+    required this.email,
+    required this.password,
+    required this.username,
+    required this.mobileNumber,  // Include mobile number in constructor
   });
 
-  toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'username': Username,
-      'password': Password,
-      'email': Email,
+      'email': email,
+      'password': password,
+      'username': username,
+      'mobileNumber': mobileNumber,  // Add toJson method for mobile number
     };
   }
 }

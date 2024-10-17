@@ -10,16 +10,21 @@ class SignupPageController extends GetxController {
   final username = TextEditingController();
   final password = TextEditingController();
   final email = TextEditingController();
+  final mobileNumber = TextEditingController();  // New controller for mobile number
 
   // Error messages for validation (RxnString allows null values)
   RxnString usernameError = RxnString(null);
   RxnString passwordError = RxnString(null);
   RxnString emailError = RxnString(null);
+  RxnString mobileNumberError = RxnString(null);  // New error message for mobile number
 
   // Function to register user
   void registerUser(String email, String password) {
     // Use AuthenticationRepository to register the user
-    AuthenticationRepository.instance.creatUserWithEmailAndPassword(email, password);
+    String? error = AuthenticationRepository.instance.creatUserWithEmailAndPassword(email, password) as String?;
+    if (error != null) {
+      Get.showSnackbar(GetSnackBar(message: error.toString()));
+    }
   }
 
   // Username validation
@@ -51,12 +56,23 @@ class SignupPageController extends GetxController {
     }
   }
 
+  // Mobile number validation
+  void validateMobileNumber(String value) {
+    RegExp mobileRegEx = RegExp(r'^\d{10}$'); // Assuming 10-digit mobile numbers
+    if (!mobileRegEx.hasMatch(value)) {
+      mobileNumberError.value = "Enter a valid 10-digit mobile number!";
+    } else {
+      mobileNumberError.value = null;
+    }
+  }
+
   // Clean up controllers to prevent memory leaks
   @override
   void onClose() {
     username.dispose();
     password.dispose();
     email.dispose();
+    mobileNumber.dispose();  // Dispose the mobile number controller
     super.onClose();
   }
 
@@ -64,6 +80,7 @@ class SignupPageController extends GetxController {
   bool get isValid {
     return usernameError.value == null &&
         passwordError.value == null &&
-        emailError.value == null;
+        emailError.value == null &&
+        mobileNumberError.value == null;  // Ensure mobile number validation is passed
   }
 }
