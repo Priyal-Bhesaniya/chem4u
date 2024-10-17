@@ -9,8 +9,8 @@ class UserRepository extends GetxController {
   static UserRepository get instance => Get.find();
   final _db = FirebaseFirestore.instance;
 
-  createUser(UserModel user) {
-    _db.collection("Users").add(user.toJson()).whenComplete(
+  createUser(UserModel user) async {
+    await _db.collection("Users").add(user.toJson()).whenComplete(
       () => Get.snackbar(
         "Success", 
         "Your account has been created.",
