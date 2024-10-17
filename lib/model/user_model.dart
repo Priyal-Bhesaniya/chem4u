@@ -12,7 +12,7 @@ class UserModel {
     this.Email,
   });
 
-  tojoson(){
+  toJoson(){
     return {
       'id': id,
       'username': Username,
