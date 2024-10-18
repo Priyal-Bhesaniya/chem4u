@@ -114,5 +114,7 @@ class SignupPageController extends GetxController {
         mobileError.value == null; // Include mobile error check here
   }
 
-  void phoneAuthentication(trim) {}
+  void phoneAuthentication(String phoneNo) {
+    AuthenticationRepository.instance.phoneAuthentication(phoneNo);
+  }
 }
