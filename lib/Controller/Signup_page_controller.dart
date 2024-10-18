@@ -18,6 +18,8 @@ class SignupPageController extends GetxController {
   RxnString emailError = RxnString(null);
   RxnString mobileError = RxnString(null);
 
+  get phoneNo => null;
+
   // Function to register user
   Future<void> registerUser() async {
     // Validate inputs
@@ -111,4 +113,6 @@ class SignupPageController extends GetxController {
         emailError.value == null &&
         mobileError.value == null; // Include mobile error check here
   }
+
+  void phoneAuthentication(trim) {}
 }

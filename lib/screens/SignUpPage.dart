@@ -146,7 +146,8 @@ Container(
                     controller.registerUser();
                     // Check if validation passed before navigating to LoginPage
                     if (controller.isValid) {
-                      Get.to(LoginPage());
+                      // Get.to(LoginPage());
+                      SignupPageController.instance.phoneAuthentication(controller.phoneNo.text.trim() );
                     }
                   },
                   style: ElevatedButton.styleFrom(
