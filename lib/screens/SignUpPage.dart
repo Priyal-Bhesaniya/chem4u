@@ -1,10 +1,10 @@
 import 'package:chemlab_flutter_project/Controller/Signup_page_controller.dart';
-import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SignUpPage extends StatelessWidget {
+  // Initialize the controller using Get.put()
   final SignupPageController controller = Get.put(SignupPageController());
   final _formKey = GlobalKey<FormState>();
 
@@ -20,12 +20,15 @@ class SignUpPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Scientist image at the top
                 CircleAvatar(
                   radius: 100,
                   backgroundImage: AssetImage('assets/images/Login_page.png'),
                   backgroundColor: Colors.transparent,
                 ),
                 SizedBox(height: 30),
+
+                // "Sign Up" text
                 Text(
                   'Sign up',
                   style: TextStyle(
@@ -61,32 +64,6 @@ class SignUpPage extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
 
-                // Mobile Number input field with validation
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 104, 181, 198),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Obx(
-                    () => TextField(
-                      controller: controller.mobileNumber,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.phone, color: Colors.black),
-                        hintText: 'Mobile Number',
-                        errorText: controller.mobileNumberError.value,
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                      ),
-                      onChanged: (value) {
-                        controller.validateMobileNumber(value);
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15),
-
                 // Password input field with validation
                 Container(
                   decoration: BoxDecoration(
@@ -113,6 +90,30 @@ class SignUpPage extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
 
+                // Mobile input field with validation
+Container(
+  decoration: BoxDecoration(
+    color: Color.fromARGB(255, 104, 181, 198),
+    borderRadius: BorderRadius.circular(10),
+  ),
+  child: Obx(
+    () => TextField(
+      controller: controller.mobile,
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.phone, color: Colors.black), // Use a phone icon here
+        hintText: 'Mobile',
+        errorText: controller.mobileError.value, // Ensure this is correctly referenced
+        border: InputBorder.none,
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      ),
+      onChanged: (value) {
+        controller.validateMobile(value);
+      },
+    ),
+  ),
+),
+
+                SizedBox(height: 15),
                 // Email input field with validation
                 Container(
                   decoration: BoxDecoration(
@@ -141,24 +142,16 @@ class SignUpPage extends StatelessWidget {
                 // Sign-up button
                 ElevatedButton(
                   onPressed: () {
-                    controller.registerUser(
-                      controller.email.text,
-                      controller.password.text,
-                    );
-
+                    // Attempt to register the user
+                    controller.registerUser();
+                    // Check if validation passed before navigating to LoginPage
                     if (controller.isValid) {
-                      final user = UserModel(
-                        email: controller.email.text.trim(),
-                        password: controller.password.text.trim(),
-                        username: controller.username.text.trim(),
-                        mobileNumber: controller.mobileNumber.text.trim(),  // Pass mobile number
-                      );
-
                       Get.to(LoginPage());
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 60),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 60),
                     backgroundColor: Color(0xFF2FA0B9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

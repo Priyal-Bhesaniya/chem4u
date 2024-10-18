@@ -2,21 +2,23 @@ class UserModel {
   String email;
   String password;
   String username;
-  String mobileNumber;  // Add mobile number field
+  String mobile;  // Add mobile number field
 
   UserModel({
     required this.email,
     required this.password,
     required this.username,
-    required this.mobileNumber,  // Include mobile number in constructor
+    required this.mobile,  // Include mobile number in constructor
   });
+
+  String? get id => null;
 
   Map<String, dynamic> toJson() {
     return {
       'email': email,
       'password': password,
       'username': username,
-      'mobileNumber': mobileNumber,  // Add toJson method for mobile number
+      'mobileNumber': mobile,  // Add toJson method for mobile number
     };
   }
 }

@@ -1,18 +1,15 @@
 import 'package:chemlab_flutter_project/Repository/exception/Signup_Email_password_failure.dart';
 import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
 import 'package:chemlab_flutter_project/screens/MainPage.dart';
+import 'package:chemlab_flutter_project/screens/Otp_varification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore for storing additional user info
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
 
-  final _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance; // Firestore instance
 
   @override
   void onReady() {
@@ -21,53 +18,69 @@ class AuthenticationRepository extends GetxController {
     ever(firebaseUser, _setInitialScreen);
   }
 
-  _setInitialScreen(User? user) {
-    user == null ? Get.offAll(() => LoadingPage()) : Get.offAll(() => MainPage());
+  void _setInitialScreen(User? user) {
+    // Navigate to the appropriate screen based on user state
+    if (user == null) {
+      Get.offAll(() => LoadingPage());
+    } else {
+      Get.offAll(() => MainPage());
+    }
   }
+void phoneAuthentication(String phoneNo){
+ _auth.verifyPhoneNumber(
+  phoneNumber: phoneNo,
+  verificationCompleted: (credintials){}, 
+  verificationFailed: (e){}, 
+  codeSent: (varificationId,resendToken){}, 
+  codeAutoRetrievalTimeout: (varificationId){}, );
 
-  // Function to create a user with email, password, and store additional info like mobile number
-  Future<void> creatUserWithEmailAndPassword(String email, String password, String mobile) async {
+}
+
+  Future<void> createUserWithEmailAndPassword(String email, String password) async {
     try {
-      // Create user with Firebase Auth
-      await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Save additional user data (mobile number) to Firestore
-      if (firebaseUser.value != null) {
-        await _firestore.collection('users').doc(firebaseUser.value!.uid).set({
-          'email': email,
-          'mobile': mobile,
-        });
+      // Check if userCredential contains a valid user
+      User? user = userCredential.user;
 
-        // Navigate to MainPage after successful signup
-        Get.offAll(() => MainPage());
+      if (user != null) {
+        // Successfully created the user
+        Get.offAll(() => OtpVerification());
       } else {
+        // Navigate to loading page as fallback
         Get.to(() => LoadingPage());
       }
     } on FirebaseAuthException catch (e) {
-      // Handle Firebase-specific signup errors
+      // Handle specific Firebase authentication errors
       final ex = SignupEmailPasswordFailure.code(e.code);
       print('Firebase Auth Exception - ${ex.message}');
-      throw ex;
-    } catch (_) {
+      Get.showSnackbar(GetSnackBar(message: 'Firebase error: ${ex.message}'));
+      throw ex; // Propagate the error
+    } catch (e) {
       // Handle other errors
       const ex = SignupEmailPasswordFailure();
-      print('An error occurred: ${ex.message}');
-      throw ex;
+      print('An unknown error occurred: ${e.toString()}');
+      Get.showSnackbar(GetSnackBar(message: 'An unknown error occurred: ${e.toString()}'));
+      throw ex; // Propagate the error
     }
   }
 
-  // Sign-in with email and password
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-    } catch (error) {
-      throw Exception('Error signing in: $error');
+    } on FirebaseAuthException catch (e) {
+      // Handle specific Firebase sign-in errors
+      throw Exception('Error signing in: ${e.message}');
+    } catch (e) {
+      // Handle other errors
+      throw Exception('Error signing in: ${e.toString()}');
     }
   }
 
-  // Logout function
-  Future<void> logout() async => await _auth.signOut();
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
 }
