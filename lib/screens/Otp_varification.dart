@@ -8,6 +8,8 @@ class OtpVerification extends StatefulWidget {
 class _OtpVerificationState extends State<OtpVerification> {
   final TextEditingController _otpController = TextEditingController();
   String? _otpError;
+  bool _isResendEnabled = true; // A flag to enable/disable the Resend button
+  int _resendCooldown = 30; // Cooldown time for resend (in seconds)
 
   // Validate OTP in real-time (assuming a 6-digit OTP)
   void _validateOTP() {
@@ -32,6 +34,23 @@ class _OtpVerificationState extends State<OtpVerification> {
       // Perform OTP verification action after validation
       print('OTP is valid: ${_otpController.text}');
     }
+  }
+
+  void _resendOtp() {
+    setState(() {
+      _isResendEnabled = false;
+      _resendCooldown = 30; // Reset cooldown
+    });
+    print('OTP Resent');
+
+    // Simulate a 30-second cooldown
+    Future.delayed(Duration(seconds: 30), () {
+      setState(() {
+        _isResendEnabled = true; // Re-enable resend button after cooldown
+      });
+    });
+
+    // Optionally, you can trigger the actual OTP resend logic here
   }
 
   @override
@@ -95,6 +114,20 @@ class _OtpVerificationState extends State<OtpVerification> {
                         color: Colors.black,
                       ),
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Resend OTP Button
+              TextButton(
+                onPressed: _isResendEnabled ? _resendOtp : null, // Disable the button if on cooldown
+                child: Text(
+                  _isResendEnabled
+                      ? 'Resend OTP'
+                      : 'Resend available in $_resendCooldown seconds',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: _isResendEnabled ? Colors.blue : Colors.grey,
                   ),
                 ),
               ),

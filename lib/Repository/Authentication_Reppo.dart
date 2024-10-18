@@ -26,8 +26,8 @@ class AuthenticationRepository extends GetxController {
       Get.offAll(() => MainPage());
     }
   }
-void phoneAuthentication(String phoneNo){
- _auth.verifyPhoneNumber(
+Future<void> phoneAuthentication(String phoneNo) async {
+ await _auth.verifyPhoneNumber(
   phoneNumber: phoneNo,
   verificationCompleted: (credintials){}, 
   verificationFailed: (e){}, 
