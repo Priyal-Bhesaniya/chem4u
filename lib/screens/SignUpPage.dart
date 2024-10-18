@@ -1,4 +1,5 @@
 import 'package:chemlab_flutter_project/Controller/Signup_page_controller.dart';
+import 'package:chemlab_flutter_project/Controller/otp_controller.dart';
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -148,6 +149,7 @@ Container(
                     if (controller.isValid) {
                       // Get.to(LoginPage());
                       SignupPageController.instance.phoneAuthentication(controller.phoneNo.text.trim() );
+                      Get.to(()=>  OtpController());
                     }
                   },
                   style: ElevatedButton.styleFrom(

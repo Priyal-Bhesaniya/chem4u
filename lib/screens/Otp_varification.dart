@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:async'; // Needed for countdown
 
 class OtpVerification extends StatefulWidget {
+  const OtpVerification({Key? key}):super(key: key);
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
 }
@@ -10,6 +12,7 @@ class _OtpVerificationState extends State<OtpVerification> {
   String? _otpError;
   bool _isResendEnabled = true; // A flag to enable/disable the Resend button
   int _resendCooldown = 30; // Cooldown time for resend (in seconds)
+  Timer? _timer; // Timer for the cooldown countdown
 
   // Validate OTP in real-time (assuming a 6-digit OTP)
   void _validateOTP() {
@@ -43,14 +46,23 @@ class _OtpVerificationState extends State<OtpVerification> {
     });
     print('OTP Resent');
 
-    // Simulate a 30-second cooldown
-    Future.delayed(Duration(seconds: 30), () {
+    // Start a countdown for the resend button
+    _startCooldownTimer();
+  }
+
+  // Timer to handle the countdown for resend OTP
+  void _startCooldownTimer() {
+    _timer?.cancel(); // Cancel any existing timer
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        _isResendEnabled = true; // Re-enable resend button after cooldown
+        if (_resendCooldown > 0) {
+          _resendCooldown--;
+        } else {
+          _isResendEnabled = true;
+          _timer?.cancel(); // Stop the timer
+        }
       });
     });
-
-    // Optionally, you can trigger the actual OTP resend logic here
   }
 
   @override
@@ -72,12 +84,15 @@ class _OtpVerificationState extends State<OtpVerification> {
                 child: TextField(
                   controller: _otpController,
                   keyboardType: TextInputType.number,
+                  onChanged: (value) => _validateOTP(),
                   decoration: InputDecoration(
                     hintText: 'Enter OTP',
                     errorText: _otpError, // Display error message if invalid OTP
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide(color: _otpError == null ? Colors.transparent : Colors.red),
+                      borderSide: BorderSide(
+                        color: _otpError == null ? Colors.transparent : Colors.red,
+                      ),
                     ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 15),
                     prefixIcon: Icon(Icons.security),
@@ -141,6 +156,7 @@ class _OtpVerificationState extends State<OtpVerification> {
   @override
   void dispose() {
     _otpController.dispose();
+    _timer?.cancel(); // Cancel the timer when the widget is disposed
     super.dispose();
   }
 }
