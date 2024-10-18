@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:chemlab_flutter_project/Repository/exception/Signup_Email_password_failure.dart';
 import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
 import 'package:chemlab_flutter_project/screens/MainPage.dart';
@@ -10,6 +12,7 @@ class AuthenticationRepository extends GetxController {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
+  var varificationId = ''.obs;
 
   @override
   void onReady() {
@@ -29,12 +32,35 @@ class AuthenticationRepository extends GetxController {
 Future<void> phoneAuthentication(String phoneNo) async {
  await _auth.verifyPhoneNumber(
   phoneNumber: phoneNo,
-  verificationCompleted: (credintials){}, 
-  verificationFailed: (e){}, 
-  codeSent: (varificationId,resendToken){}, 
-  codeAutoRetrievalTimeout: (varificationId){}, );
+  verificationCompleted: (credintial) async {
+    await _auth.signInWithCredential(credintial);
+  }, 
+  verificationFailed: (e){
+    if(e.code =='invalid phone number'){
+      Get.snackbar('Error', 'The Provided phone number is not valid') ;
+    }
+    else 
+    {
+      Get.snackbar('Error', 'An error occurred during the phone verification process') ;
+    }
+  }, 
+  codeSent: (varificationId,resendToken){
+    this.varificationId.value = varificationId;
+    
+  }, 
+  codeAutoRetrievalTimeout: (varificationId){
+    this.varificationId.value = varificationId;
+
+  }, );
 
 }
+
+Future<bool> varifyOTP (String otp) async{
+  var credintials=  await _auth
+  .signInWithCredential(PhoneAuthProvider.credential(verificationId:this.varificationId.value,smsCode: otp)); 
+  return credintials.user !=null ? true : false;
+}
+
 
   Future<void> createUserWithEmailAndPassword(String email, String password) async {
     try {
