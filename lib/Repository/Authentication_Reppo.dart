@@ -13,7 +13,7 @@ class AuthenticationRepository extends GetxController {
   late final Rx<User?> firebaseUser;
 
   @override
-  void onReady() {
+  void onReady() {//for adding a commit
     firebaseUser = Rx<User?>(_auth.currentUser);
     firebaseUser.bindStream(_auth.userChanges());
     ever(firebaseUser, _setInitialScreen);
