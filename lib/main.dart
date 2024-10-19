@@ -1,8 +1,7 @@
 import 'package:chemlab_flutter_project/Controller/Signup_page_controller.dart';
 import 'package:chemlab_flutter_project/Repository/Authentication_Reppo.dart';
-import 'package:chemlab_flutter_project/screens/Otp_varification.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
- // Import your OtpVerification page
+// Import your SignupPageController
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
@@ -33,12 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Firebase App',
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/SignUpPage', // Set initial route to SignUpPage
-      getPages: [
-        GetPage(name: '/SignUpPage', page: () => SignUpPage()), // Define SignUpPage route
-        GetPage(name: '/OtpVerification', page: () => OtpVerification()), // Define OtpVerification route
-      ],
+      home: SignUpPage(),
     );
   }
 }
