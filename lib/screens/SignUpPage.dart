@@ -127,7 +127,7 @@ class SignUpPage extends StatelessWidget {
                     email: controller.email.text,
                     password: controller.password.text
                    );
-
+                    SignupPageController.instance.createUser(user);
                     controller.registerUser(controller.email.text, controller.password.text);
                     if (controller.isValid) {
                       Get.to(LoginPage());
