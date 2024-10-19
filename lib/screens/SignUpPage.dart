@@ -1,4 +1,5 @@
 import 'package:chemlab_flutter_project/Controller/Signup_page_controller.dart';
+import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -121,7 +122,12 @@ class SignUpPage extends StatelessWidget {
                 // Sign-up button
                 ElevatedButton(
                   onPressed: () {
-                   
+                   final user =UserModel(
+                    username: controller.username.text,
+                    email: controller.email.text,
+                    password: controller.password.text
+                   );
+
                     controller.registerUser(controller.email.text, controller.password.text);
                     if (controller.isValid) {
                       Get.to(LoginPage());
