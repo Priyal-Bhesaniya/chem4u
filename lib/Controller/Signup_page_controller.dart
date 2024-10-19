@@ -1,5 +1,7 @@
 import 'package:chemlab_flutter_project/EmailVerificationPage.dart';
 import 'package:chemlab_flutter_project/Repository/Authentication_Reppo.dart';
+import 'package:chemlab_flutter_project/Repository/User_repository.dart';
+import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +15,8 @@ class SignupPageController extends GetxController {
   final username = TextEditingController();
   final password = TextEditingController();
   final email = TextEditingController();
+
+  final userRepo = Get.put(UserRepository());
 
   // Error messages for validation (RxnString allows null values)
   RxnString usernameError = RxnString(null);
@@ -40,6 +44,12 @@ void registerUser(String email, String password) async {
   }
 }
 
+//store the data 
+
+Future<void>  createUser(UserModel user ) async {
+  await userRepo.createUser(user);
+ 
+}
 
   // Username validation
   void validateUsername(String value) {
