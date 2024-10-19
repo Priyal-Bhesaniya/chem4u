@@ -1,26 +1,28 @@
+import 'package:chemlab_flutter_project/Controller/otp_controller.dart';
 import 'package:flutter/material.dart';
-import 'dart:async'; // Needed for countdown
+import 'dart:async';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
 class OtpVerification extends StatefulWidget {
-  const OtpVerification({Key? key}):super(key: key);
+  const OtpVerification({Key? key}) : super(key: key);
+
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
 }
 
 class _OtpVerificationState extends State<OtpVerification> {
-  final TextEditingController _otpController = TextEditingController();
   String? _otpError;
   bool _isResendEnabled = true; // A flag to enable/disable the Resend button
   int _resendCooldown = 30; // Cooldown time for resend (in seconds)
   Timer? _timer; // Timer for the cooldown countdown
+  String otp = ""; // Variable to store OTP input
 
   // Validate OTP in real-time (assuming a 6-digit OTP)
-  void _validateOTP() {
-    String otp = _otpController.text;
+  void _validateOTP(String otpInput) {
     RegExp otpRegEx = RegExp(r'^\d{6}$'); // OTP must be 6 digits
 
     setState(() {
-      if (!otpRegEx.hasMatch(otp)) {
+      if (!otpRegEx.hasMatch(otpInput)) {
         _otpError = "OTP must be 6 digits!";
       } else {
         _otpError = null;
@@ -29,25 +31,33 @@ class _OtpVerificationState extends State<OtpVerification> {
   }
 
   void _validateInput() {
-    // Final validation when submit button is pressed
-    _validateOTP();
+    if (otp.isEmpty || otp.length != 6) {
+      setState(() {
+        _otpError = "Please enter a valid 6-digit OTP!";
+      });
+      return;
+    }
 
-    // Proceed only if there are no errors
     if (_otpError == null) {
-      // Perform OTP verification action after validation
-      print('OTP is valid: ${_otpController.text}');
+      OtpController.instance.verifyOTP(otp); // Call OTP verification logic
+      print('OTP is valid: $otp');
+    } else {
+      print('Invalid OTP');
     }
   }
 
   void _resendOtp() {
-    setState(() {
-      _isResendEnabled = false;
-      _resendCooldown = 30; // Reset cooldown
-    });
-    print('OTP Resent');
+    if (_isResendEnabled) { // Ensure button is enabled before resending
+      setState(() {
+        _isResendEnabled = false;
+        _resendCooldown = 30; // Reset cooldown
+        _otpError = null; // Clear any previous error
+      });
+      print('OTP Resent');
 
-    // Start a countdown for the resend button
-    _startCooldownTimer();
+      // Start a countdown for the resend button
+      _startCooldownTimer();
+    }
   }
 
   // Timer to handle the countdown for resend OTP
@@ -74,38 +84,37 @@ class _OtpVerificationState extends State<OtpVerification> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // OTP TextField
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 35),
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 104, 181, 198),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextField(
-                  controller: _otpController,
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) => _validateOTP(),
-                  decoration: InputDecoration(
-                    hintText: 'Enter OTP',
-                    errorText: _otpError, // Display error message if invalid OTP
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide(
-                        color: _otpError == null ? Colors.transparent : Colors.red,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                    prefixIcon: Icon(Icons.security),
+              SizedBox(height: 30),
+              // OtpTextField (for entering OTP)
+              OtpTextField(
+                numberOfFields: 6,
+                fillColor: Colors.black.withOpacity(0.1),
+                filled: true,
+                onCodeChanged: (code) {
+                  _validateOTP(code); // Validate OTP as the user types
+                },
+                onSubmit: (code) {
+                  otp = code; // Store the OTP entered
+                  _validateOTP(otp); // Final validation on submission
+                  _validateInput(); // Proceed with OTP verification
+                  print('OTP from OtpTextField: $otp');
+                },
+              ),
+              if (_otpError != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    _otpError!,
+                    style: TextStyle(color: Colors.red),
                   ),
                 ),
-              ),
               SizedBox(height: 30),
               // Submit Button (Validate OTP)
               Container(
                 width: 290,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _validateInput,
+                  onPressed: _validateInput, // Button press to validate and submit OTP
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF2FA0B9),
                     shape: RoundedRectangleBorder(
@@ -155,7 +164,6 @@ class _OtpVerificationState extends State<OtpVerification> {
 
   @override
   void dispose() {
-    _otpController.dispose();
     _timer?.cancel(); // Cancel the timer when the widget is disposed
     super.dispose();
   }

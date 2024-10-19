@@ -1,9 +1,10 @@
-import 'dart:ffi';
+// Removed: import 'dart:ffi';
 
 import 'package:chemlab_flutter_project/Repository/exception/Signup_Email_password_failure.dart';
 import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
 import 'package:chemlab_flutter_project/screens/MainPage.dart';
 import 'package:chemlab_flutter_project/screens/Otp_varification.dart';
+import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -12,7 +13,7 @@ class AuthenticationRepository extends GetxController {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
-  var varificationId = ''.obs;
+  var verificationId = ''.obs;
 
   @override
   void onReady() {
@@ -26,41 +27,41 @@ class AuthenticationRepository extends GetxController {
     if (user == null) {
       Get.offAll(() => LoadingPage());
     } else {
-      Get.offAll(() => MainPage());
+      Get.offAll(() => SignUpPage());
     }
   }
-Future<void> phoneAuthentication(String phoneNo) async {
- await _auth.verifyPhoneNumber(
-  phoneNumber: phoneNo,
-  verificationCompleted: (credintial) async {
-    await _auth.signInWithCredential(credintial);
-  }, 
-  verificationFailed: (e){
-    if(e.code =='invalid phone number'){
-      Get.snackbar('Error', 'The Provided phone number is not valid') ;
-    }
-    else 
-    {
-      Get.snackbar('Error', 'An error occurred during the phone verification process') ;
-    }
-  }, 
-  codeSent: (varificationId,resendToken){
-    this.varificationId.value = varificationId;
-    
-  }, 
-  codeAutoRetrievalTimeout: (varificationId){
-    this.varificationId.value = varificationId;
 
-  }, );
+  Future<void> phoneAuthentication(String phoneNo) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNo,
+      verificationCompleted: (credential) async {
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (e) {
+        if (e.code == 'invalid-phone-number') {
+          Get.snackbar('Error', 'The provided phone number is not valid');
+        } else {
+          Get.snackbar('Error', 'An error occurred during phone verification');
+        }
+      },
+      codeSent: (verificationId, resendToken) {
+        this.verificationId.value = verificationId;
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
+        this.verificationId.value = verificationId;
+      },
+    );
+  }
 
-}
-
-Future<bool> varifyOTP (String otp) async{
-  var credintials=  await _auth
-  .signInWithCredential(PhoneAuthProvider.credential(verificationId:this.varificationId.value,smsCode: otp)); 
-  return credintials.user !=null ? true : false;
-}
-
+  Future<bool> verifyOTP(String otp) async {
+    var credentials = await _auth.signInWithCredential(
+      PhoneAuthProvider.credential(
+        verificationId: this.verificationId.value,
+        smsCode: otp,
+      ),
+    );
+    return credentials.user != null;
+  }
 
   Future<void> createUserWithEmailAndPassword(String email, String password) async {
     try {
@@ -69,7 +70,6 @@ Future<bool> varifyOTP (String otp) async{
         password: password,
       );
 
-      // Check if userCredential contains a valid user
       User? user = userCredential.user;
 
       if (user != null) {
@@ -80,17 +80,15 @@ Future<bool> varifyOTP (String otp) async{
         Get.to(() => LoadingPage());
       }
     } on FirebaseAuthException catch (e) {
-      // Handle specific Firebase authentication errors
       final ex = SignupEmailPasswordFailure.code(e.code);
       print('Firebase Auth Exception - ${ex.message}');
       Get.showSnackbar(GetSnackBar(message: 'Firebase error: ${ex.message}'));
-      throw ex; // Propagate the error
+      throw ex;
     } catch (e) {
-      // Handle other errors
       const ex = SignupEmailPasswordFailure();
       print('An unknown error occurred: ${e.toString()}');
       Get.showSnackbar(GetSnackBar(message: 'An unknown error occurred: ${e.toString()}'));
-      throw ex; // Propagate the error
+      throw ex;
     }
   }
 
@@ -98,10 +96,8 @@ Future<bool> varifyOTP (String otp) async{
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      // Handle specific Firebase sign-in errors
       throw Exception('Error signing in: ${e.message}');
     } catch (e) {
-      // Handle other errors
       throw Exception('Error signing in: ${e.toString()}');
     }
   }
