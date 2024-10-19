@@ -78,13 +78,19 @@ class SignupPageController extends GetxController {
   }
 
   // Mobile validation
- void validateMobile(String value) {
-    if (value.length < 10) { // Adjust the length as necessary for mobile
-      mobileError.value = "Mobile number must be at least 10 characters!"; // Update this message
-    } else {
-      mobileError.value = null; // Set to null if validation passes
-    }
+
+
+
+void validateMobile(String value) {
+  if (value.isEmpty) {
+    mobileError.value = 'Mobile number is required';
+  } else if (value.length != 10 || !RegExp(r'^\d+$').hasMatch(value)) {
+    mobileError.value = 'Enter a valid 10-digit mobile number';
+  } else {
+    mobileError.value = null; // Clear error if valid
+  }
 }
+
 
   // Email validation
   void validateEmail(String value) {
