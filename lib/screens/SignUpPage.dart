@@ -93,28 +93,30 @@ class SignUpPage extends StatelessWidget {
                   SizedBox(height: 15),
 
                   // Mobile input field with validation
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 104, 181, 198),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Obx(
-                      () => TextFormField(
-                        controller: controller.mobile,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.phone, color: Colors.black),
-                          hintText: 'Mobile',
-                          errorText: controller.mobileError.value,
-                          border: InputBorder.none,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                        ),
-                        onChanged: (value) {
-                          controller.validateMobile(value);
-                        },
-                      ),
-                    ),
-                  ),
+                 // Mobile input field with validation
+Container(
+  decoration: BoxDecoration(
+    color: Color.fromARGB(255, 104, 181, 198),
+    borderRadius: BorderRadius.circular(10),
+  ),
+  child: Obx(
+    () => TextField(
+      controller: controller.mobile,
+      keyboardType: TextInputType.phone, // Ensure the keyboard is appropriate
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.phone, color: Colors.black),
+        hintText: 'Mobile',
+        errorText: controller.mobileError.value, // Ensure this is correctly referenced
+        border: InputBorder.none,
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      ),
+      onChanged: (value) {
+        controller.validateMobile(value);
+      },
+    ),
+  ),
+),
+
                   SizedBox(height: 15),
 
                   // Email input field with validation
