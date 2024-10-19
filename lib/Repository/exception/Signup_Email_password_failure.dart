@@ -1,5 +1,5 @@
 class SignupEmailPasswordFailure implements Exception {
-  final String message;
+  final String message;//adding commits
 
   // Constructor for the error with a specific message
   SignupEmailPasswordFailure([this.message = "An unknown error occurred."]);
