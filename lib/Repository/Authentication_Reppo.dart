@@ -1,8 +1,8 @@
-// Removed: import 'dart:ffi';
+
 
 import 'package:chemlab_flutter_project/Repository/exception/Signup_Email_password_failure.dart';
 import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
-import 'package:chemlab_flutter_project/screens/MainPage.dart';
+
 import 'package:chemlab_flutter_project/screens/Otp_varification.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,27 +31,31 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  Future<void> phoneAuthentication(String phoneNo) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phoneNo,
-      verificationCompleted: (credential) async {
-        await _auth.signInWithCredential(credential);
-      },
-      verificationFailed: (e) {
-        if (e.code == 'invalid-phone-number') {
-          Get.snackbar('Error', 'The provided phone number is not valid');
-        } else {
-          Get.snackbar('Error', 'An error occurred during phone verification');
-        }
-      },
-      codeSent: (verificationId, resendToken) {
-        this.verificationId.value = verificationId;
-      },
-      codeAutoRetrievalTimeout: (verificationId) {
-        this.verificationId.value = verificationId;
-      },
-    );
-  }
+ Future<void> phoneAuthentication(String phoneNo) async {
+  // Ensure the phone number is in the correct format
+  final formattedPhoneNo = phoneNo.startsWith('+') ? phoneNo : '+91$phoneNo';
+
+  await _auth.verifyPhoneNumber(
+    phoneNumber: formattedPhoneNo, // Use the formatted phone number
+    verificationCompleted: (credential) async {
+      await _auth.signInWithCredential(credential);
+    },
+    verificationFailed: (e) {
+      if (e.code == 'invalid-phone-number') {
+        Get.snackbar('Error', 'The provided phone number is not valid');
+      } else {
+        Get.snackbar('Error', 'An error occurred during phone verification');
+      }
+    },
+    codeSent: (verificationId, resendToken) {
+      this.verificationId.value = verificationId;
+    },
+    codeAutoRetrievalTimeout: (verificationId) {
+      this.verificationId.value = verificationId;
+    },
+  );
+}
+
 
   Future<bool> verifyOTP(String otp) async {
     var credentials = await _auth.signInWithCredential(
