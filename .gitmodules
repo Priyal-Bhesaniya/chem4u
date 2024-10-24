@@ -1,0 +1,3 @@
+[submodule "chem-app"]
+	path = chem-app
+	url = https://github.com/MadhviSanghani/chem-app.git

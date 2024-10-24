@@ -32,7 +32,7 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  Future<void> createUserWithEmailAndPassword(String email, String password) async {
+  Future<void> createUserWithEmailAndPassword(String email, String password,) async {
     try {
       final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       
