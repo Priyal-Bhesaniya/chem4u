@@ -1,8 +1,8 @@
 import 'package:chemlab_flutter_project/EmailVerificationPage.dart';
-import 'package:chemlab_flutter_project/Repository/exception/Signup_Email_password_failure.dart';
+
 import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
-import 'package:chemlab_flutter_project/screens/LoginPage.dart';
+
 import 'package:chemlab_flutter_project/screens/MainPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore

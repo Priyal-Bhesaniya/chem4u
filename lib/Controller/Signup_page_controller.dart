@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class SignupPageController extends GetxController {
   // Singleton instance
-  static SignupPageController get instance => Get.find(); // This works after Get.put() is called
+  static SignupPageController get instance => Get.find(); // Works after Get.put() is called
 
   // TextEditingControllers for form fields
   final username = TextEditingController();
@@ -22,29 +22,52 @@ class SignupPageController extends GetxController {
   RxnString emailError = RxnString(null);
 
   // Function to register user and send verification email
-  void registerUser(String username, String email, String password) async {
+  void registerUser(String email, String password, String username) async {
     try {
-      // Pass the username as the third argument
+      // Validate the fields before attempting to register
+      validateUsername(username);
+      validateEmail(email);
+      validatePassword(password);
+
+      if (!isValid) {
+        Get.snackbar('Error', 'Please correct the errors in the form.');
+        return;
+      }
+
+      // Register user using Firebase Authentication
       await AuthenticationRepository.instance.createUserWithEmailAndPassword(email, password, username);
-      
-      // If registration is successful, redirect to a verification page or similar
-      // Optionally, you can also send a verification email here
+
+      // If successful, create a user entry in Firestore
+      final user = UserModel(
+        username: username,
+        email: email,
+        password: password, // You may want to encrypt or avoid storing the password directly
+      );
+      await createUser(user);
+
+      Get.snackbar(
+        'Success',
+        'Registration successful! A verification email has been sent.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      // Redirect user to a verification page, login page, or next step
     } catch (e) {
-      // Display the error message to the user
+      // Display the error message
       Get.snackbar(
         'Error',
-        e.toString(),
+        'Failed to sign up: ${e.toString()}',
         mainButton: TextButton(
           onPressed: () {
-            Get.to(SignUpPage()); // Redirect to signup page when user clicks the button
+            Get.to(SignUpPage()); // Redirect to the signup page
           },
-          child: Text('Go to Login'),
+          child: Text('Try Again'),
         ),
       );
     }
   }
 
-  // Store the data 
+  // Store the user data in Firestore
   Future<void> createUser(UserModel user) async {
     await userRepo.createUser(user);
   }
@@ -52,29 +75,35 @@ class SignupPageController extends GetxController {
   // Username validation
   void validateUsername(String value) {
     RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
-    if (!usernameRegEx.hasMatch(value)) {
+    if (value.isEmpty) {
+      usernameError.value = "Username cannot be empty!";
+    } else if (!usernameRegEx.hasMatch(value)) {
       usernameError.value = "Username must be alphanumeric!";
     } else {
-      usernameError.value = null;
+      usernameError.value = null; // Clear error if valid
     }
   }
 
   // Password validation
   void validatePassword(String value) {
-    if (value.length < 6) {
+    if (value.isEmpty) {
+      passwordError.value = "Password cannot be empty!";
+    } else if (value.length < 6) {
       passwordError.value = "Password must be at least 6 characters!";
     } else {
-      passwordError.value = null;
+      passwordError.value = null; // Clear error if valid
     }
   }
 
   // Email validation
   void validateEmail(String value) {
     RegExp emailRegEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegEx.hasMatch(value)) {
+    if (value.isEmpty) {
+      emailError.value = "Email cannot be empty!";
+    } else if (!emailRegEx.hasMatch(value)) {
       emailError.value = "Enter a valid email!";
     } else {
-      emailError.value = null;
+      emailError.value = null; // Clear error if valid
     }
   }
 
