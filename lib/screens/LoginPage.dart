@@ -1,8 +1,10 @@
+import 'package:chemlab_flutter_project/Repository/Authentication_Reppo.dart';
 import 'package:chemlab_flutter_project/screens/MainPage.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+// Import your AuthenticationRepository
+import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,9 +12,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController(); // Change to _emailController
   final TextEditingController _passwordController = TextEditingController();
-  String? _usernameError;
+  String? _emailError; // Change to _emailError
   String? _passwordError;
 
   @override
@@ -20,8 +22,8 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
 
     // Add listeners to controllers for real-time validation
-    _usernameController.addListener(() {
-      _validateUsername();
+    _emailController.addListener(() {
+      _validateEmail(); // Change to _validateEmail
     });
 
     _passwordController.addListener(() {
@@ -29,16 +31,16 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  // Validate username in real-time
-  void _validateUsername() {
-    String username = _usernameController.text;
-    RegExp usernameRegEx = RegExp(r'^[a-zA-Z0-9]+$');
+  // Validate email in real-time
+  void _validateEmail() {
+    String email = _emailController.text;
+    RegExp emailRegEx = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'); // Email regex
     
     setState(() {
-      if (!usernameRegEx.hasMatch(username)) {
-        _usernameError = "Username must be alphanumeric!";
+      if (!emailRegEx.hasMatch(email)) {
+        _emailError = "Invalid email format!";
       } else {
-        _usernameError = null;
+        _emailError = null;
       }
     });
   }
@@ -57,19 +59,29 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void _validateInput() {
+  void _validateInput() async {
     // Final validation when login button is pressed
-    _validateUsername();
+    _validateEmail(); // Change to _validateEmail
     _validatePassword();
 
     // Proceed only if there are no errors
-    if (_usernameError == null && _passwordError == null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MainPage(), // Replace with your next page widget
-        ),
-      );
+    if (_emailError == null && _passwordError == null) {
+      try {
+        // Attempt to sign in the user
+        await AuthenticationRepository.instance.signInWithEmailAndPassword(
+          _emailController.text, // Change to _emailController.text
+          _passwordController.text,
+        );
+
+        // If login is successful, navigate to MainPage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+        );
+      } catch (e) {
+        // Handle any errors that occurred during login
+        Get.snackbar('Login Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+      }
     }
   }
 
@@ -105,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
-              // Username TextField
+              // Email TextField
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 35),
                 decoration: BoxDecoration(
@@ -113,16 +125,16 @@ class _LoginPageState extends State<LoginPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
-                  controller: _usernameController,
+                  controller: _emailController, // Change to _emailController
                   decoration: InputDecoration(
-                    hintText: 'Username',
-                    errorText: _usernameError, // Display error message
+                    hintText: 'Email', // Change to Email
+                    errorText: _emailError, // Display error message
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide(color: _usernameError == null ? Colors.transparent : Colors.red),
+                      borderSide: BorderSide(color: _emailError == null ? Colors.transparent : Colors.red),
                     ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: Icon(Icons.email), // Change icon to email icon
                   ),
                 ),
               ),
@@ -221,7 +233,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose(); // Change to _emailController.dispose()
     _passwordController.dispose();
     super.dispose();
   }
