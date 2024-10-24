@@ -36,7 +36,7 @@ class SignUpPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
 
-                  // Username field
+                  
                   Container(
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 104, 181, 198),
