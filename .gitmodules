@@ -1,3 +1,6 @@
 [submodule "chem-app"]
 	path = chem-app
 	url = https://github.com/MadhviSanghani/chem-app.git
+[submodule "chem4u"]
+	path = chem4u
+	url = https://github.com/Priyal-Bhesaniya/chem4u.git
