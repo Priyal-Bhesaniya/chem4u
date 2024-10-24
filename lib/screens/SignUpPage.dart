@@ -3,18 +3,15 @@ import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
- // Import GetX package
 
 class SignUpPage extends StatelessWidget {
-  // Initialize the controller using Get.put()
   final SignupPageController controller = Get.put(SignupPageController());
-  final _formKey  = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key:_formKey,
+      key: _formKey,
       backgroundColor: Color.fromARGB(255, 139, 205, 220),
       body: Center(
         child: SingleChildScrollView(
@@ -23,17 +20,13 @@ class SignUpPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Scientist image at the top
                 CircleAvatar(
                   radius: 100,
                   backgroundImage: AssetImage('assets/images/Login_page.png'),
                   backgroundColor: Colors.transparent,
                 ),
                 SizedBox(height: 30),
-
-                // "Sign Up" text
                 Text(
-                  
                   'Sign up',
                   style: TextStyle(
                     fontSize: 28,
@@ -43,7 +36,7 @@ class SignUpPage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
 
-                // Username input field with validation
+                // Username field
                 Container(
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 104, 181, 198),
@@ -57,8 +50,7 @@ class SignUpPage extends StatelessWidget {
                         hintText: 'Username',
                         errorText: controller.usernameError.value,
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       ),
                       onChanged: (value) {
                         controller.validateUsername(value);
@@ -68,7 +60,7 @@ class SignUpPage extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
 
-                // Password input field with validation
+                // Password field
                 Container(
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 104, 181, 198),
@@ -83,8 +75,7 @@ class SignUpPage extends StatelessWidget {
                         hintText: 'Password',
                         errorText: controller.passwordError.value,
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       ),
                       onChanged: (value) {
                         controller.validatePassword(value);
@@ -94,7 +85,7 @@ class SignUpPage extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
 
-                // Email input field with validation
+                // Email field
                 Container(
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 104, 181, 198),
@@ -108,8 +99,7 @@ class SignUpPage extends StatelessWidget {
                         hintText: 'E-mail',
                         errorText: controller.emailError.value,
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       ),
                       onChanged: (value) {
                         controller.validateEmail(value);
@@ -122,20 +112,19 @@ class SignUpPage extends StatelessWidget {
                 // Sign-up button
                 ElevatedButton(
                   onPressed: () {
-                   final user =UserModel(
-                    username: controller.username.text,
-                    email: controller.email.text,
-                    password: controller.password.text
-                   );
-                    SignupPageController.instance.createUser(user);
-                    controller.registerUser(controller.email.text, controller.password.text);
                     if (controller.isValid) {
-                      Get.to(LoginPage());
+                      // Create UserModel without password
+                      final user = UserModel(
+                        username: controller.username.text,
+                        email: controller.email.text, password: '',
+                      );
+
+                      // Register the user using the email and password
+                      controller.registerUser(user.email, controller.password.text, user.username);
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 15, horizontal: 60),
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 60),
                     backgroundColor: Color(0xFF2FA0B9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

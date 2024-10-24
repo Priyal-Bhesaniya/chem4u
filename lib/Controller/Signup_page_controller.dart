@@ -1,11 +1,9 @@
-
 import 'package:chemlab_flutter_project/Repository/Authentication_Reppo.dart';
 import 'package:chemlab_flutter_project/Repository/User_repository.dart';
 import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class SignupPageController extends GetxController {
   // Singleton instance
@@ -24,32 +22,32 @@ class SignupPageController extends GetxController {
   RxnString emailError = RxnString(null);
 
   // Function to register user and send verification email
-void registerUser(String email, String password) async {
-  try {
-    await AuthenticationRepository.instance.createUserWithEmailAndPassword(email, password);
-    // If registration is successful, you might want to redirect to a verification page or similar
-    // Optionally, you can also send a verification email here
-  } catch (e) {
-    // Display the error message to the user
-    Get.snackbar(
-      'Error',
-      e.toString(),
-      mainButton: TextButton(
-        onPressed: () {
-          Get.to(SignUpPage()); // Redirect to login page when user clicks the button
-        },
-        child: Text('Go to Login'),
-      ),
-    );
+  void registerUser(String username, String email, String password) async {
+    try {
+      // Pass the username as the third argument
+      await AuthenticationRepository.instance.createUserWithEmailAndPassword(email, password, username);
+      
+      // If registration is successful, redirect to a verification page or similar
+      // Optionally, you can also send a verification email here
+    } catch (e) {
+      // Display the error message to the user
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        mainButton: TextButton(
+          onPressed: () {
+            Get.to(SignUpPage()); // Redirect to signup page when user clicks the button
+          },
+          child: Text('Go to Login'),
+        ),
+      );
+    }
   }
-}
 
-//store the data 
-
-Future<void>  createUser(UserModel user ) async {
-  await userRepo.createUser(user);
- 
-}
+  // Store the data 
+  Future<void> createUser(UserModel user) async {
+    await userRepo.createUser(user);
+  }
 
   // Username validation
   void validateUsername(String value) {
