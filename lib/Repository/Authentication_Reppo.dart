@@ -64,22 +64,40 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
-    try {
-      final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
-      final user = userCredential.user;
+  // Future<void> signInWithEmailAndPassword(String email, String password) async {
+  //   try {
+  //     final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+  //     final user = userCredential.user;
 
-      if (user != null && !user.emailVerified) {
-        Get.snackbar('Email not verified', 'Please verify your email before logging in.');
-        await _auth.signOut(); // Immediately sign the user out if email is not verified
-      } else {
-        Get.offAll(() => MainPage()); // Allow login if email is verified
-      }
-    } catch (e) {
-      print('Error signing in: $e');
-      Get.snackbar('Login Error', 'Failed to log in. Please check your credentials.');
+  //     if (user != null && !user.emailVerified) {
+  //       Get.snackbar('Email not verified', 'Please verify your email before logging in.');
+  //       await _auth.signOut(); // Immediately sign the user out if email is not verified
+  //     } else {
+  //       Get.offAll(() => MainPage()); // Allow login if email is verified
+  //     }
+  //   } catch (e) {
+  //     print('Error signing in: $e');
+  //     Get.snackbar('Login Error', 'Failed to log in. Please check your credentials.');
+  //   }
+  // }
+
+
+Future<void> signInWithEmailAndPassword(String email, String password) async {
+  try {
+    final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    final user = userCredential.user;
+
+    if (user != null && !user.emailVerified) {
+      Get.snackbar('Email not verified', 'Please verify your email before logging in.');
+      await _auth.signOut(); // Immediately sign the user out if email is not verified
+      throw Exception('Email not verified');
     }
+  } catch (e) {
+    print('Error signing in: $e');
+    throw Exception('Failed to log in. Please check your credentials.');
   }
+}
+
 
   Future<void> logout() async => await _auth.signOut();
 }
