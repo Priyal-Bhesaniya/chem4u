@@ -2,6 +2,7 @@ import 'package:chemlab_flutter_project/EmailVerificationPage.dart';
 
 import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
+import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 
 import 'package:chemlab_flutter_project/screens/MainPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +30,7 @@ class AuthenticationRepository extends GetxController {
       if (!user.emailVerified) {
         Get.offAll(() => EmailVerificationPage());
       } else {
-        Get.offAll(() => MainPage()); // Redirect to MainPage if email is verified
+        Get.offAll(() => LoginPage()); // Redirect to MainPage if email is verified
       }
     }
   }
@@ -68,22 +69,38 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
-    try {
-      final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
-      final user = userCredential.user;
+Future<void> signInWithEmailAndPassword(String email, String password) async {
+  try {
+    // Log the email and password being used for sign-in
+    print("Attempting to sign in with email: $email");
 
-      if (user != null && !user.emailVerified) {
-        Get.snackbar('Email not verified', 'Please verify your email before logging in.');
-        await _auth.signOut(); // Immediately sign the user out if email is not verified
-      } else {
-        Get.offAll(() => MainPage()); // Allow login if email is verified
+    final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    final user = userCredential.user;
+
+    if (user != null) {
+      // Fetch the user data from Firestore
+      UserModel? userModel = await getUserByEmail(email);
+      if (userModel == null) {
+        throw FirebaseAuthException(code: 'user-not-found', message: 'User not found in Firestore.');
       }
-    } catch (e) {
-      print('Error signing in: $e');
-      Get.snackbar('Login Error', 'Failed to log in. Please check your credentials.');
+
+      if (!user.emailVerified) {
+        Get.snackbar('Email not verified', 'Please verify your email before logging in.');
+        await _auth.signOut(); // Sign out if email is not verified
+        throw FirebaseAuthException(code: 'email-not-verified', message: 'Please verify your email.');
+      }
     }
+  } on FirebaseAuthException catch (e) {
+    print('Firebase Auth Error: ${e.code} - ${e.message}'); // Log the error
+    throw e; // Rethrow the exception to be caught in the LoginPage
+  } catch (e) {
+    print('Unexpected Error: $e'); // Log unexpected errors
+    throw Exception("An unknown error occurred: $e");
   }
+}
+
+
+
 
 
    Future<UserModel?> getUserByEmail(String email) async {

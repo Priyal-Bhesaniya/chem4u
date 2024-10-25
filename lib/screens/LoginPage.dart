@@ -1,10 +1,11 @@
 import 'package:chemlab_flutter_project/Repository/Authentication_Reppo.dart';
 import 'package:chemlab_flutter_project/screens/MainPage.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-// Import your AuthenticationRepository
-import 'package:get/get.dart';
+import 'package:get/get.dart'; // Import Get for snackbar
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,78 +13,87 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController(); // Change to _emailController
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String? _emailError; // Change to _emailError
+  String? _emailError;
   String? _passwordError;
 
   @override
   void initState() {
     super.initState();
-
-    // Add listeners to controllers for real-time validation
-    _emailController.addListener(() {
-      _validateEmail(); // Change to _validateEmail
-    });
-
-    _passwordController.addListener(() {
-      _validatePassword();
-    });
+    // Real-time validation listeners
+    _emailController.addListener(_validateEmail);
+    _passwordController.addListener(_validatePassword);
   }
 
-  // Validate email in real-time
+  // Validate email format
   void _validateEmail() {
     String email = _emailController.text;
-    RegExp emailRegEx = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'); // Email regex
-    
+    RegExp emailRegEx = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     setState(() {
-      if (!emailRegEx.hasMatch(email)) {
-        _emailError = "Invalid email format!";
-      } else {
-        _emailError = null;
-      }
+      _emailError = !emailRegEx.hasMatch(email) ? "Invalid email format!" : null;
     });
   }
 
-  // Validate password in real-time
+  // Validate password length
   void _validatePassword() {
     String password = _passwordController.text;
-    RegExp passwordRegEx = RegExp(r'^.{6,}$'); // Password must be at least 6 characters
-
     setState(() {
-      if (!passwordRegEx.hasMatch(password)) {
-        _passwordError = "Password must be at least 6 characters!";
-      } else {
-        _passwordError = null;
-      }
+      _passwordError = password.length < 6 ? "Password must be at least 6 characters!" : null;
     });
   }
 
-  void _validateInput() async {
-    // Final validation when login button is pressed
-    _validateEmail(); // Change to _validateEmail
-    _validatePassword();
+  // Handle final input validation and login
+void _validateInput() async {
+  _validateEmail();
+  _validatePassword();
 
-    // Proceed only if there are no errors
-    if (_emailError == null && _passwordError == null) {
-      try {
-        // Attempt to sign in the user
-        await AuthenticationRepository.instance.signInWithEmailAndPassword(
-          _emailController.text, // Change to _emailController.text
-          _passwordController.text,
-        );
+  if (_emailError == null && _passwordError == null) {
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(_emailController.text)
+          .get();
 
-        // If login is successful, navigate to MainPage
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainPage()),
+      if (userDoc.exists) {
+        String dbPassword = userDoc.data()?['password'] ?? '';
+
+        if (dbPassword == _passwordController.text) {
+          // Credentials matched
+          Get.offAll(() => MainPage());
+        } else {
+          // Incorrect password
+          Get.snackbar(
+            'Login Failed', 'Incorrect password. Please try again.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white,
+          );
+        }
+      } else {
+        // User not found
+        Get.snackbar(
+          'Login Failed', 'No user found with this email.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
         );
-      } catch (e) {
-        // Handle any errors that occurred during login
-        Get.snackbar('Login Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
       }
+    } catch (e) {
+      Get.snackbar(
+        'Login Error', 'Failed to log in: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     }
   }
+}
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,13 +111,12 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                    image: AssetImage('assets/images/Login_page.png'), // Replace with your image path
+                    image: AssetImage('assets/images/Login_page.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               SizedBox(height: 20),
-              // 'Log in' Text
               Text(
                 'Log in',
                 style: TextStyle(
@@ -125,16 +134,16 @@ class _LoginPageState extends State<LoginPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
-                  controller: _emailController, // Change to _emailController
+                  controller: _emailController,
                   decoration: InputDecoration(
-                    hintText: 'Email', // Change to Email
-                    errorText: _emailError, // Display error message
+                    hintText: 'Email',
+                    errorText: _emailError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       borderSide: BorderSide(color: _emailError == null ? Colors.transparent : Colors.red),
                     ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                    prefixIcon: Icon(Icons.email), // Change icon to email icon
+                    prefixIcon: Icon(Icons.email),
                   ),
                 ),
               ),
@@ -151,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
-                    errorText: _passwordError, // Display error message
+                    errorText: _passwordError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       borderSide: BorderSide(color: _passwordError == null ? Colors.transparent : Colors.red),
@@ -233,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _emailController.dispose(); // Change to _emailController.dispose()
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
