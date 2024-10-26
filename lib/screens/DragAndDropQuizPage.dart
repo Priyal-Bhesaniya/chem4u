@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'dart:async'; // Add this import for Timer functionality
 
 class DragAndDropQuizPage extends StatefulWidget {
   @override
@@ -29,8 +30,24 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
     });
   }
 
+  void _showLottieAnimation() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LottieAnimationPage(score: score, total: targetNames.length),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (quizCompleted && score > 3) {
+      // Show the Lottie animation when conditions are met
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showLottieAnimation();
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz 1: Drag and Drop'),
@@ -53,7 +70,7 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
-        
+
               // Score and feedback
               Text(
                 'Score: $score',
@@ -65,7 +82,7 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
                 style: TextStyle(fontSize: 16, color: feedback == 'Correct!' ? Colors.green : Colors.red),
               ),
               SizedBox(height: 30),
-        
+
               // Draggable items and drop targets
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -87,7 +104,7 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
                       );
                     }),
                   ),
-        
+
                   // Right side: Drop targets
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -108,8 +125,8 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
                 ],
               ),
               SizedBox(height: 30),
-        
-              // Completion message and Lottie animation
+
+              // Completion message
               if (quizCompleted)
                 Column(
                   children: [
@@ -117,13 +134,6 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
                       'Quiz Complete! Final Score: $score/${targetNames.length}',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
                     ),
-                    if (score > 3)
-                      Lottie.asset(
-              'assets/animations/pop2.json', // Path to your Lottie animation file
-                        width: 150,
-                        height: 150,
-                        repeat: false,
-                      ),
                   ],
                 ),
             ],
@@ -190,6 +200,46 @@ class TargetItemBox extends StatelessWidget {
             style: TextStyle(fontSize: 18, color: Colors.black),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Full-screen Lottie animation page
+class LottieAnimationPage extends StatelessWidget {
+  final int score;
+  final int total;
+
+  LottieAnimationPage({required this.score, required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    // Start a timer to redirect after 6 seconds
+    Timer(Duration(seconds: 6), () {
+      Navigator.popUntil(context, (route) => route.isFirst); // Change to your desired redirection logic
+    });
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Lottie.asset(
+                'assets/animations/pop2.json', // Path to your Lottie animation file
+                width: MediaQuery.of(context).size.width, // Full width
+                height: MediaQuery.of(context).size.height, // Full height
+                repeat: false,
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Final Score: $score/$total',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
