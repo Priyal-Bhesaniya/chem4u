@@ -11,21 +11,9 @@ class UserRepository extends GetxController {
   Future<void> createUser(UserModel user) async {
     try {
       await _db.collection("Users").doc(user.email).set(user.toJson());
-      Get.snackbar(
-        "Success",
-        "Your account has been created.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-      );
+      _showSnackbar("Success", "Your account has been created.", Colors.green);
     } catch (error) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${error.toString()}",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      _showSnackbar("Error", "Something went wrong: ${error.toString()}", Colors.red);
       print("Error creating user: $error");
     }
   }
@@ -37,25 +25,41 @@ class UserRepository extends GetxController {
       if (doc.exists) {
         return UserModel.fromJson(doc.data() as Map<String, dynamic>);
       } else {
-        Get.snackbar(
-          "Not Found",
-          "No user found with this email.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.yellow.withOpacity(0.1),
-          colorText: Colors.black,
-        );
+        _showSnackbar("Not Found", "No user found with this email.", Colors.yellow);
         return null;
       }
     } catch (error) {
-      Get.snackbar(
-        "Error",
-        "Something went wrong: ${error.toString()}",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      _showSnackbar("Error", "Something went wrong: ${error.toString()}", Colors.red);
       print("Error retrieving user: $error");
       return null;
     }
+  }
+
+  /// Saves a note for the specified user in Firestore
+  Future<void> saveNoteForUser(String email, String noteContent) async {
+    try {
+      await _db
+          .collection('Users')
+          .doc(email)
+          .collection('notes')
+          .add({
+        'content': noteContent,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      print("Error saving note for user $email: $error");
+      throw error; // Rethrow error for handling in UI
+    }
+  }
+
+  /// Helper method to show snackbars
+  void _showSnackbar(String title, String message, Color color) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: color.withOpacity(0.1),
+      colorText: color,
+    );
   }
 }

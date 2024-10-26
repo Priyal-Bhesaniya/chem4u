@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class CleanNotesPage extends StatefulWidget {
   @override
@@ -11,54 +9,12 @@ class CleanNotesPage extends StatefulWidget {
 class _CleanNotesPageState extends State<CleanNotesPage> {
   final TextEditingController _controller = TextEditingController();
   final List<String> _notes = [];
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final User? currentUser = FirebaseAuth.instance.currentUser; // Get the current logged-in user
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchNotes(); // Fetch saved notes when the page loads
-  }
-
-  void _addNote() async {
-    if (_controller.text.isNotEmpty && currentUser != null) {
-      String noteContent = _controller.text;
-
-      // Add note to Firestore
-      await _firestore
-          .collection('users')
-          .doc(currentUser!.email)
-          .collection('notes')
-          .add({
-        'content': noteContent,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      // Update local state and clear the input
+  void _addNote() {
+    if (_controller.text.isNotEmpty) {
       setState(() {
-        _notes.add(noteContent);
-        _controller.clear();
-      });
-    }
-  }
-
-  void _fetchNotes() async {
-    if (currentUser != null) {
-      // Fetch notes from Firestore
-      QuerySnapshot snapshot = await _firestore
-          .collection('users')
-          .doc(currentUser!.email)
-          .collection('notes')
-          .orderBy('timestamp', descending: true)
-          .get();
-
-      List<String> fetchedNotes = snapshot.docs
-          .map((doc) => doc['content'] as String)
-          .toList();
-
-      // Update the state with fetched notes
-      setState(() {
-        _notes.addAll(fetchedNotes);
+        _notes.add(_controller.text);
+        _controller.clear(); // Clear the input field after adding a note
       });
     }
   }

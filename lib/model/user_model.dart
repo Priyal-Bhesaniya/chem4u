@@ -1,11 +1,12 @@
 class UserModel {
   final String username;
   final String email;
+  final String password; // Add the password field
 
-  // Removed the password field from the constructor and class
   const UserModel({
     required this.username,
-    required this.email, required String password,
+    required this.email,
+    required this.password, // Include in constructor
   });
 
   // Convert UserModel to JSON
@@ -13,7 +14,7 @@ class UserModel {
     return {
       'username': username,
       'email': email,
-      // Exclude password for security reasons
+      'password': password, // Include password
     };
   }
 
@@ -21,7 +22,8 @@ class UserModel {
   static UserModel fromJson(Map<String, dynamic> data) {
     return UserModel(
       username: data['username'] as String,
-      email: data['email'] as String, password: '',
+      email: data['email'] as String,
+      password: data['password'] as String, // Fetch password
     );
   }
 }

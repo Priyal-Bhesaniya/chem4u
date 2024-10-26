@@ -1,4 +1,3 @@
-
 import 'package:chemlab_flutter_project/Repository/User_repository.dart';
 import 'package:chemlab_flutter_project/model/user_model.dart';
 import 'package:chemlab_flutter_project/screens/LoginPage.dart';
@@ -43,6 +42,7 @@ class ProfilePage extends StatelessWidget {
               UserModel user = snapshot.data!;
               String username = user.username;
               String email = user.email;
+              String password = user.password; // Include password if needed
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -67,22 +67,53 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ProfileTextField(
-                    hintText: username,
-                    icon: Icons.person,
-                    obscureText: false,
+                  // Standard TextField for Username
+                  TextField(
+                    controller: TextEditingController(text: username),
+                    decoration: InputDecoration(
+                      hintText: 'Username',
+                      prefixIcon: Icon(Icons.person, color: Colors.black),
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 104, 181, 198),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    readOnly: true, // Make it read-only since it's user data
                   ),
                   SizedBox(height: 10),
-                  ProfileTextField(
-                    hintText: '********', // You may want to handle passwords securely
-                    icon: Icons.visibility,
-                    obscureText: true,
+                  // Standard TextField for Password
+                  TextField(
+                    controller: TextEditingController(text: '********'), // Placeholder for password
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      prefixIcon: Icon(Icons.visibility, color: Colors.black),
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 104, 181, 198),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    obscureText: true, // Keep the password hidden
+                    readOnly: true, // Make it read-only since it's user data
                   ),
                   SizedBox(height: 10),
-                  ProfileTextField(
-                    hintText: email,
-                    icon: Icons.email,
-                    obscureText: false,
+                  // Standard TextField for Email
+                  TextField(
+                    controller: TextEditingController(text: email),
+                    decoration: InputDecoration(
+                      hintText: 'Email',
+                      prefixIcon: Icon(Icons.email, color: Colors.black),
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 104, 181, 198),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    readOnly: true, // Make it read-only since it's user data
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
@@ -94,9 +125,8 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () async {
-                      // Log out button functionality
                       await _auth.signOut();
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => LoginPage(),
@@ -121,39 +151,12 @@ class ProfilePage extends StatelessWidget {
   }
 
   Future<UserModel?> _fetchUserData() async {
-    String email = _auth.currentUser!.email!; // Get current user's email
-    return await _userRepository.getUserByEmail(email); // Fetch user data by email
-  }
-}
+    User? currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      return null; // No user is logged in
+    }
 
-class ProfileTextField extends StatelessWidget {
-  final String hintText;
-  final IconData icon;
-  final bool obscureText;
-
-  ProfileTextField({
-    required this.hintText,
-    required this.icon,
-    this.obscureText = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color.fromARGB(255, 104, 181, 198),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey),
-      ),
-      child: TextField(
-        obscureText: obscureText,
-        readOnly: true, // Make the field read-only since it's user data
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: InputBorder.none,
-          prefixIcon: Icon(icon, color: Colors.black),
-        ),
-      ),
-    );
+    String email = currentUser.email!; // Get the user's email
+    return await _userRepository.getUserByEmail(email); // Fetch user data
   }
 }
