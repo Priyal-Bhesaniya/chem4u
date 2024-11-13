@@ -44,6 +44,7 @@ dependencies:
   email_auth: ^2.0.0
   firebase_database: ^11.1.4
   firebase_phone_auth_handler: ^1.1.0
+  flutter_tts: ^4.1.0
 
 dev_dependencies:
   flutter_test:
