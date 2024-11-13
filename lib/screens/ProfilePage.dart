@@ -4,9 +4,49 @@ import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final UserRepository _userRepository = UserRepository.instance;
+  Future<UserModel?>? _userDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _setUserData(); // Fetch user data initially
+    _auth.userChanges().listen((User? user) {
+      if (user != null) {
+        _setUserData(); // Update user data whenever authentication state changes
+      }
+    });
+  }
+
+  void _setUserData() {
+    setState(() {
+      _userDataFuture = _fetchUserData();
+    });
+  }
+
+  Future<UserModel?> _fetchUserData() async {
+    User? currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      print("No user is logged in.");
+      return null; // No user is logged in
+    }
+
+    String email = currentUser.email!.toLowerCase();
+    print("Fetching user data for email: $email"); // Debugging log
+
+    UserModel? user = await _userRepository.getUserByEmail(email);
+    if (user == null) {
+      print("User data not found for email: $email");
+    }
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +66,7 @@ class ProfilePage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: FutureBuilder<UserModel?>(
-            future: _fetchUserData(), // Fetch user data from Firestore
+            future: _userDataFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -38,11 +78,9 @@ class ProfilePage extends StatelessWidget {
                 return Center(child: Text('No user data found.'));
               }
 
-              // Get user data from Firestore
               UserModel user = snapshot.data!;
               String username = user.username;
               String email = user.email;
-              String password = user.password; // Include password if needed
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -67,7 +105,6 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  // Standard TextField for Username
                   TextField(
                     controller: TextEditingController(text: username),
                     decoration: InputDecoration(
@@ -80,12 +117,11 @@ class ProfilePage extends StatelessWidget {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    readOnly: true, // Make it read-only since it's user data
+                    readOnly: true,
                   ),
                   SizedBox(height: 10),
-                  // Standard TextField for Password
                   TextField(
-                    controller: TextEditingController(text: '********'), // Placeholder for password
+                    controller: TextEditingController(text: '********'),
                     decoration: InputDecoration(
                       hintText: 'Password',
                       prefixIcon: Icon(Icons.visibility, color: Colors.black),
@@ -96,11 +132,10 @@ class ProfilePage extends StatelessWidget {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    obscureText: true, // Keep the password hidden
-                    readOnly: true, // Make it read-only since it's user data
+                    obscureText: true,
+                    readOnly: true,
                   ),
                   SizedBox(height: 10),
-                  // Standard TextField for Email
                   TextField(
                     controller: TextEditingController(text: email),
                     decoration: InputDecoration(
@@ -113,7 +148,7 @@ class ProfilePage extends StatelessWidget {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    readOnly: true, // Make it read-only since it's user data
+                    readOnly: true,
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
@@ -148,15 +183,5 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<UserModel?> _fetchUserData() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      return null; // No user is logged in
-    }
-
-    String email = currentUser.email!; // Get the user's email
-    return await _userRepository.getUserByEmail(email); // Fetch user data
   }
 }

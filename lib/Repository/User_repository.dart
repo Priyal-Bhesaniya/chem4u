@@ -10,7 +10,7 @@ class UserRepository extends GetxController {
   /// Creates a new user in Firestore
   Future<void> createUser(UserModel user) async {
     try {
-      await _db.collection("Users").doc(user.email).set(user.toJson());
+      await _db.collection("Users").doc(user.email.toLowerCase()).set(user.toJson());
       _showSnackbar("Success", "Your account has been created.", Colors.green);
     } catch (error) {
       _showSnackbar("Error", "Something went wrong: ${error.toString()}", Colors.red);
@@ -19,18 +19,40 @@ class UserRepository extends GetxController {
   }
 
   /// Retrieves a user from Firestore by email
-  Future<UserModel?> getUserByEmail(String email) async {
+  // Future<UserModel?> getUserByEmail(String email) async {
+  //   try {
+  //     String formattedEmail = email.toLowerCase(); // Ensure email is in lowercase
+  //     print("Fetching user for email: $formattedEmail");
+
+  //     DocumentSnapshot doc = await _db.collection("Users").doc(formattedEmail).get();
+  //     if (doc.exists) {
+  //       return UserModel.fromJson(doc.data() as Map<String, dynamic>);
+  //     } else {
+  //       _showSnackbar("Not Found", "No user found with this email.", Colors.yellow);
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     _showSnackbar("Error", "Something went wrong: ${error.toString()}", Colors.red);
+  //     print("Error retrieving user: $error");
+  //     return null;
+  //   }
+  // }
+
+   Future<UserModel?> getUserByEmail(String email) async {
     try {
-      DocumentSnapshot doc = await _db.collection("Users").doc(email).get();
+      String formattedEmail = email.toLowerCase(); // Ensure email is in lowercase
+      print("Fetching user for email: $formattedEmail"); // Debugging log
+
+      DocumentSnapshot doc = await _db.collection("Users").doc(formattedEmail).get();
       if (doc.exists) {
+        print("User found for email: $formattedEmail"); // Debugging log
         return UserModel.fromJson(doc.data() as Map<String, dynamic>);
       } else {
-        _showSnackbar("Not Found", "No user found with this email.", Colors.yellow);
+        print("No user found for email: $formattedEmail"); // Debugging log
         return null;
       }
     } catch (error) {
-      _showSnackbar("Error", "Something went wrong: ${error.toString()}", Colors.red);
-      print("Error retrieving user: $error");
+      print("Error retrieving user: $error"); // Debugging log
       return null;
     }
   }
@@ -40,7 +62,7 @@ class UserRepository extends GetxController {
     try {
       await _db
           .collection('Users')
-          .doc(email)
+          .doc(email.toLowerCase())  // Ensure email is in lowercase
           .collection('notes')
           .add({
         'content': noteContent,

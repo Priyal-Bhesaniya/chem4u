@@ -17,35 +17,35 @@ def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "
 def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
 android {
-    namespace = "com.example.chemlab_flutter_project"
-    compileSdk = flutter.compileSdkVersion // Match your project's compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    namespace = "com.example.chemlab"
+    compileSdkVersion 34  // Use a fixed version here
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     defaultConfig {
-        applicationId = "com.example.chemlab_flutter_project"
-        minSdk = flutter.minSdkVersion // Ensure this matches your Flutter project's minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        applicationId = "com.example.chemlab"
+        minSdk = 23  // Ensure this matches your Flutter project's minSdkVersion
+        targetSdk = 34  // Align with your Flutter project's target SDK
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug // Temporary for debug signing; replace with your release signing config for production.
+            signingConfig = signingConfigs.debug  // For production, set up release signing config
         }
     }
 }
 
-// Adding Firebase dependencies
 dependencies {
-    // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:33.4.0') // Check for the latest version
-    // Add the dependency for the Firebase Authentication library
+    implementation platform('com.google.firebase:firebase-bom:33.4.0') // Check for latest
     implementation 'com.google.firebase:firebase-auth'
 }
 

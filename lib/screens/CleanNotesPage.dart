@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore import
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 
 class CleanNotesPage extends StatefulWidget {
@@ -10,12 +11,20 @@ class _CleanNotesPageState extends State<CleanNotesPage> {
   final TextEditingController _controller = TextEditingController();
   final List<String> _notes = [];
 
-  void _addNote() {
+  // Reference to Firestore collection (change 'notes' to your desired collection name)
+  final CollectionReference notesCollection =
+      FirebaseFirestore.instance.collection('notes');
+
+  Future<void> _addNote() async {
     if (_controller.text.isNotEmpty) {
       setState(() {
         _notes.add(_controller.text);
-        _controller.clear(); // Clear the input field after adding a note
       });
+      await notesCollection.add({
+        'note': _controller.text,
+        'timestamp': FieldValue.serverTimestamp(), // optional: for ordering
+      });
+      _controller.clear(); // Clear the input field after adding a note
     }
   }
 
