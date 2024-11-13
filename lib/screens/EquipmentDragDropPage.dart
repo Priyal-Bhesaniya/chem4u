@@ -10,8 +10,8 @@ class EquipmentDragDropPage extends StatefulWidget {
 
 class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
   List<String> draggedItems = [];
-  
-  Color currentColor = Colors.transparent;
+
+  Color currentColor = Colors.white; // Initial color for the flask
   String lottieAnimationPath = 'assets/animations/7.json'; // Initial animation
 
   void updateExperimentState(String item) {
@@ -57,15 +57,15 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
           Expanded(
             child: Row(
               children: [
-                // Left Column - Equipment to Drag
+                // Left Column - Equipment to Drag with Labels
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      buildDraggableItem("Universal Indicator", "assets/images/indicator.png"),
-                      buildDraggableItem("Vinegar", "assets/images/vinegar.png"),
-                      buildDraggableItem("Ammonia", "assets/images/ammonia.png"),
-                      buildDraggableItem("More Vinegar", "assets/images/vinegar.png"),
+                      buildDraggableWithLabel("Universal Indicator", "assets/images/universal indicator.png"),
+                      buildDraggableWithLabel("Vinegar", "assets/images/vinegar.png"),
+                      buildDraggableWithLabel("Ammonia", "assets/images/nh3.png"),
+                      buildDraggableWithLabel("More Vinegar", "assets/images/vinegar.png"),
                     ],
                   ),
                 ),
@@ -95,7 +95,7 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                               Lottie.asset(
                                 'assets/animations/5.json', 
                                 width: 200, 
-                                height: 200
+                                height: 200,
                               ),
                               SizedBox(height: 10),
                               // Flask Animation with Color Filter
@@ -125,18 +125,27 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
     );
   }
 
-  // Function to build draggable equipment items
-  Widget buildDraggableItem(String name, String imagePath) {
-    return Draggable<String>(
-      data: name,
-      feedback: Material(
-        child: EquipmentBox(name: name, imagePath: imagePath, isFeedback: true),
-      ),
-      childWhenDragging: Opacity(
-        opacity: 0.3,
-        child: EquipmentBox(name: name, imagePath: imagePath),
-      ),
-      child: EquipmentBox(name: name, imagePath: imagePath),
+  // Function to build draggable items with a label
+  Widget buildDraggableWithLabel(String name, String imagePath) {
+    return Column(
+      children: [
+        Draggable<String>(
+          data: name,
+          feedback: Material(
+            child: EquipmentBox(name: name, imagePath: imagePath, isFeedback: true),
+          ),
+          childWhenDragging: Opacity(
+            opacity: 0.3,
+            child: EquipmentBox(name: name, imagePath: imagePath),
+          ),
+          child: EquipmentBox(name: name, imagePath: imagePath),
+        ),
+        SizedBox(height: 5),
+        Text(
+          name,
+          style: TextStyle(fontSize: 14),
+        ),
+      ],
     );
   }
 }

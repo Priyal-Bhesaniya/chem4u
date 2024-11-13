@@ -79,6 +79,9 @@ flutter:
     - assets/images/quiz.png
     - assets/images/notes.png
     - assets/images/Login_page.png
+    - assets/images/nh3.png
+    - assets/images/universal indicator.png
+    - assets/images/vinegar.png
     - assets/animations/lodingpage1.json
     - assets/animations/MainPage.json
     - assets/animations/Mainpage1.json
