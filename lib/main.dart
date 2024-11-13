@@ -1,5 +1,7 @@
 import 'package:chemlab_flutter_project/Controller/Signup_page_controller.dart';
 import 'package:chemlab_flutter_project/Repository/Authentication_Reppo.dart';
+import 'package:chemlab_flutter_project/screens/LoadingPage.dart';
+import 'package:chemlab_flutter_project/screens/Module1Page.dart';
 import 'package:chemlab_flutter_project/screens/SignUpPage.dart';
 // Import your SignupPageController
 import 'package:flutter/material.dart';
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Firebase App',
-      home: SignUpPage(),
+      home: Module1Page(),
     );
   }
 }

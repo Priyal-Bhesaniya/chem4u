@@ -25,13 +25,59 @@ class Module1Page extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              "Try the Briggs-Rauscher Oscillating Clock Reaction  The Oscillating Clock or Briggs-Rauscher reaction changes color from clear to amber to blue. The reaction cycles between colors for a few minutes, eventually turning blue-black.",
-            
+              "Experiment: pH Level Changes Using Indicators, Acids, and Bases",
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 10),
-            Text("Solution A Add 43 g potassium iodate (KIO3) to ~800 mL distilled water. Stir in 4.5 mL sulfuric acid (H2SO4). Continue stirring until the potassium iodate is dissolved. Dilute to 1 L."),
-            // You can add more content here
+            Text(
+              "Materials:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(
+              "• Universal Indicator: Changes color to indicate the pH (red for acidic, green for neutral, blue for basic).",
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              "• Vinegar: An acidic solution that lowers the pH.",
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              "• Ammonia: A basic solution that raises the pH.",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "Procedure:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(
+              "1. Add Universal Indicator: Start with a neutral color (green).",
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              "2. Add Vinegar: Turns the solution red, showing it’s acidic.",
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              "3. Add Ammonia: Turns the solution blue, indicating it’s basic.",
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              "4. Add More Vinegar: Deepens the red color, making the solution more acidic.",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "Purpose:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(
+              "This experiment helps visualize how acids and bases affect pH, using the color changes of the indicator as a simple demonstration of acidity and alkalinity.",
+              style: TextStyle(fontSize: 16),
+            ),
           ],
         ),
       ),
