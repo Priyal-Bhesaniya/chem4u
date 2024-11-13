@@ -15,6 +15,29 @@ class _CleanNotesPageState extends State<CleanNotesPage> {
   final CollectionReference notesCollection =
       FirebaseFirestore.instance.collection('notes');
 
+  @override
+  void initState() {
+    super.initState();
+    _loadNotes(); // Load notes when the page is first created
+  }
+
+  // Fetch notes from Firestore
+  Future<void> _loadNotes() async {
+    try {
+      QuerySnapshot snapshot = await notesCollection.orderBy('timestamp').get();
+      List<String> fetchedNotes = snapshot.docs.map((doc) {
+        return doc['note'] as String;
+      }).toList();
+      setState(() {
+        _notes.clear();  // Clear the current list of notes
+        _notes.addAll(fetchedNotes);  // Add fetched notes to the list
+      });
+    } catch (e) {
+      print('Error loading notes: $e');
+    }
+  }
+
+  // Add a new note to Firestore
   Future<void> _addNote() async {
     if (_controller.text.isNotEmpty) {
       setState(() {
