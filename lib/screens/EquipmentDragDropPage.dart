@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+
+void main() => runApp(MaterialApp(home: EquipmentDragDropPage()));
 
 class EquipmentDragDropPage extends StatefulWidget {
   @override
@@ -7,12 +10,29 @@ class EquipmentDragDropPage extends StatefulWidget {
 
 class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
   List<String> draggedItems = [];
+  
+  Color currentColor = Colors.transparent;
+  String lottieAnimationPath = 'assets/animations/7.json'; // Initial animation
+
+  void updateExperimentState(String item) {
+    setState(() {
+      if (item == "Universal Indicator") {
+        currentColor = Colors.green; // Color for Indicator
+      } else if (item == "Vinegar") {
+        currentColor = Colors.red; // Color for Acidic solution
+      } else if (item == "Ammonia") {
+        currentColor = Colors.blue; // Color for Basic solution
+      } else if (item == "More Vinegar") {
+        currentColor = Colors.redAccent; // Color for Strong Acid
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Experiment 1"),
+        title: Text("Confounding Color Experiment"),
         backgroundColor: Color.fromARGB(255, 104, 181, 198),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -20,22 +40,17 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.person_outline, size: 30),
-            onPressed: () {
-              // Navigate to Profile Page
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              "Titration: a technique used to measure the volume of a solution of known concentration that is required to react with a measured amount (mass or volume) of an unknown substance in solution.\n\n"
-              "Buret: an instrument used to measure volume; a graduated glass tube about 40 cm long with a stopcock on one end.",
+              "Follow the steps to observe color changes based on pH level.\n"
+              "1. Add Universal Indicator\n"
+              "2. Add Vinegar (Acid)\n"
+              "3. Add Ammonia (Base)\n"
+              "4. Add More Vinegar",
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -47,17 +62,18 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      buildDraggableItem("Buret", "assets/images/buret.png"),
-                      buildDraggableItem("Flask", "assets/images/flask.png"),
-                      buildDraggableItem("Beaker", "assets/images/beaker.png"),
+                      buildDraggableItem("Universal Indicator", "assets/images/indicator.png"),
+                      buildDraggableItem("Vinegar", "assets/images/vinegar.png"),
+                      buildDraggableItem("Ammonia", "assets/images/ammonia.png"),
+                      buildDraggableItem("More Vinegar", "assets/images/vinegar.png"),
                     ],
                   ),
                 ),
-
-                // Right Column - Drop Target
+                // Right Column - Drop Target with Lottie Animation and Color Filter
                 Expanded(
                   child: DragTarget<String>(
                     onAccept: (data) {
+                      updateExperimentState(data);
                       setState(() {
                         draggedItems.add(data);
                       });
@@ -67,24 +83,35 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                         margin: EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
-                          color: Colors.lightBlue[50],
+                          color: currentColor.withOpacity(0.2),
                         ),
-                        child: Stack(
-                          children: [
-                            for (String item in draggedItems)
-                              Positioned(
-                                top: draggedItems.indexOf(item) * 100.0,
-                                child: DraggableItemBox(item),
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Dropper Animation
+                              Lottie.asset(
+                                'assets/animations/5.json', 
+                                width: 200, 
+                                height: 200
                               ),
-                            Center(
-                              child: Text(
-                                draggedItems.isEmpty
-                                    ? "Drop Equipment Here"
-                                    : "",
-                                style: TextStyle(fontSize: 20, color: Colors.black38),
+                              SizedBox(height: 10),
+                              // Flask Animation with Color Filter
+                              ColorFiltered(
+                                colorFilter: ColorFilter.mode(
+                                  currentColor.withOpacity(0.5), 
+                                  BlendMode.srcATop,
+                                ),
+                                child: Lottie.asset(
+                                  lottieAnimationPath,
+                                  width: 250,
+                                  height: 250,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -134,32 +161,6 @@ class EquipmentBox extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage(imagePath),
           fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-}
-
-// Widget for positioning dropped items inside the drop target area
-class DraggableItemBox extends StatelessWidget {
-  final String name;
-
-  DraggableItemBox(this.name);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      width: 80,
-      height: 80,
-      decoration: BoxDecoration(
-        color: Colors.greenAccent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: Text(
-          name,
-          style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
     );

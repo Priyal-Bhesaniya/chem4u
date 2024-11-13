@@ -84,6 +84,15 @@ flutter:
     - assets/animations/Mainpage1.json
     - assets/animations/popup.json
     - assets/animations/pop2.json
+    - assets/animations/1.json
+    - assets/animations/2.json
+    - assets/animations/3.json
+    - assets/animations/4.json
+    - assets/animations/5.json
+    - assets/animations/6.json
+    - assets/animations/7.json   
+   
+    
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
