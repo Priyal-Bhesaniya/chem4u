@@ -2,7 +2,6 @@ import 'package:chemlab_flutter_project/screens/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-
 class LoadingPage extends StatefulWidget {
   @override
   _LoadingPageState createState() => _LoadingPageState();
@@ -12,12 +11,14 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
-    // Navigate to your next page after 2-3 seconds
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()), // Use your existing page here
-      );
+    // Navigate to your next page after 2-3 seconds, checking if mounted
+    Future.delayed(Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()), // Use your existing page here
+        );
+      }
     });
   }
 

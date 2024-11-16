@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
-import 'dart:async'; // Add this import for Timer functionality
+import 'dart:async';
 
 class DragAndDropQuizPage extends StatefulWidget {
   @override
@@ -26,8 +28,22 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
       }
       if (answers.every((answer) => answer.isNotEmpty)) {
         quizCompleted = true;
+        _saveScoreToFirestore(); // Save to Firestore when quiz is complete
       }
     });
+  }
+
+  Future<void> _saveScoreToFirestore() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('quizzes').add({
+        'userId': user.uid,
+        'quizName': 'Drag and Drop Quiz 1',
+        'score': score,
+        'totalQuestions': targetNames.length,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    }
   }
 
   void _showLottieAnimation() {
@@ -42,7 +58,6 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
   @override
   Widget build(BuildContext context) {
     if (quizCompleted && score > 3) {
-      // Show the Lottie animation when conditions are met
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showLottieAnimation();
       });
@@ -214,31 +229,44 @@ class LottieAnimationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Start a timer to redirect after 6 seconds
-    Timer(Duration(seconds: 6), () {
-      Navigator.popUntil(context, (route) => route.isFirst); // Change to your desired redirection logic
+    // Start a timer to redirect after 4 seconds
+    Timer(Duration(seconds: 4), () {
+      Navigator.popUntil(context, (route) => route.isFirst);
     });
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Lottie.asset(
-                'assets/animations/pop2.json', // Path to your Lottie animation file
-                width: MediaQuery.of(context).size.width, // Full width
-                height: MediaQuery.of(context).size.height, // Full height
-                repeat: false,
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Final Score: $score/$total',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              'assets/animations/pop2.json', // Replace with your Lottie animation file
+              width: MediaQuery.of(context).size.width, // Full width
+              height: MediaQuery.of(context).size.height * 0.5, // Half height
+              repeat: false,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Final Score: $score/$total',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+           ElevatedButton(
+  onPressed: () {
+    Navigator.popUntil(context, (route) => route.isFirst);
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.black, // Button background color
+    foregroundColor: Colors.white, // Text color
+    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12), // Optional padding for size adjustment
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8), // Optional rounded corners
+    ),
+  ),
+  child: Text('Return to Home'),
+)
+          ],
         ),
       ),
     );

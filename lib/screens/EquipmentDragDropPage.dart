@@ -1,8 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Confounding Color Experiment',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: EquipmentDragDropPage(),
+    );
+  }
+}
 
 class EquipmentDragDropPage extends StatefulWidget {
   @override
@@ -13,9 +32,11 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
   FlutterTts flutterTts = FlutterTts(); // Text-to-speech instance
   bool isSpeaking = false; // Flag to check if speech is playing
   List<String> draggedItems = []; // Initialize the draggedItems list
-
   Color currentColor = Colors.white;
   String lottieAnimationPath = 'assets/animations/7.json';
+
+  // Instance of Firebase Firestore
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -43,13 +64,13 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
 
     switch (item) {
       case "Universal Indicator":
-        await flutterTts.speak("Step 1: Add Universal Indicator.");
+        await flutterTts.speak("Step 1: Add Universal Indicator, it helps in detecting pH changes.");
         break;
       case "Vinegar":
-        await flutterTts.speak("Step 2: Add Vinegar, an acidic solution.");
+        await flutterTts.speak("Step 2: Add Vinegar, an acidic solution, to observe pH change.");
         break;
       case "Ammonia":
-        await flutterTts.speak("Step 3: Add Ammonia, a basic solution.");
+        await flutterTts.speak("Step 3: Add Ammonia, a basic solution, to observe pH change.");
         break;
       case "More Vinegar":
         await flutterTts.speak("Step 4: Add more Vinegar for a stronger acid.");
@@ -73,10 +94,10 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
 
     // Speak all instructions simultaneously
     flutterTts.speak("Follow the steps to observe color changes based on pH level.");
-    flutterTts.speak("Step one: Add Universal Indicator.");
-    flutterTts.speak("Step two: Add Vinegar, an acidic solution.");
-    flutterTts.speak("Step three: Add Ammonia, a basic solution.");
-    flutterTts.speak("Step one: Add Universal Indicator, Step two: Add Vinegar, an acidic solution, Step three: Add Ammonia, a basic solution, Step four: Add more Vinegar for a stronger acid.");
+    flutterTts.speak("Step one: Add Universal Indicator, it helps in detecting pH changes.");
+    flutterTts.speak("Step two: Add Vinegar, an acidic solution, to observe pH change.");
+    flutterTts.speak("Step three: Add Ammonia, a basic solution, to observe pH change.");
+    flutterTts.speak("Step four: Add more Vinegar for a stronger acid.");
 
     setState(() {
       isSpeaking = false;
@@ -91,6 +112,24 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
     });
   }
 
+  // Function to save the experiment data to Firebase
+  Future<void> saveExperimentData() async {
+    try {
+      // Creating a reference to the Firestore collection
+      DocumentReference docRef = await _firestore.collection('experiments').add({
+        'items': draggedItems,
+        'timestamp': FieldValue.serverTimestamp(),
+        'color': currentColor.toString(),
+      });
+
+      // You can also add additional data such as the timestamp of when the experiment was done
+      print('Experiment data saved with ID: ${docRef.id}');
+    } catch (e) {
+      print('Error saving experiment data: $e');
+    }
+  }
+
+  // Update experiment state and save to Firestore
   void updateExperimentState(String item) {
     setState(() {
       if (item == "Universal Indicator") {
@@ -102,7 +141,12 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
       } else if (item == "More Vinegar") {
         currentColor = Colors.redAccent;
       }
+
+      draggedItems.add(item); // Add the item to the draggedItems list
     });
+
+    // Save the experiment data to Firestore after an item is dropped
+    saveExperimentData();
   }
 
   @override
@@ -167,16 +211,16 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
             Expanded(
               child: Row(
                 children: [
-                  // Left Column - Equipment to Drag with Labels
+                  // Left Column - Equipment to Drag with Labels and Descriptions
                   Expanded(
                     child: SingleChildScrollView( // Make this scrollable to prevent overflow
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          buildDraggableWithLabel("Universal Indicator", "assets/images/universal indicator.png"),
-                          buildDraggableWithLabel("Vinegar", "assets/images/vinegar.png"),
-                          buildDraggableWithLabel("Ammonia", "assets/images/nh3.png"),
-                          buildDraggableWithLabel("More Vinegar", "assets/images/vinegar.png"),
+                          buildDraggableWithLabel("Universal Indicator", "Universal Indicator detects pH changes.", "assets/images/universal indicator.png"),
+                          buildDraggableWithLabel("Vinegar", "Vinegar is an acidic solution used to test pH.", "assets/images/vinegar.png"),
+                          buildDraggableWithLabel("Ammonia", "Ammonia is a basic solution used to test pH.", "assets/images/nh3.png"),
+                          buildDraggableWithLabel("More Vinegar", "Add more Vinegar for a stronger acidic solution.", "assets/images/vinegar.png"),
                         ],
                       ),
                     ),
@@ -185,11 +229,8 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                   Expanded(
                     child: DragTarget<String>( 
                       onAccept: (data) {
-                        updateExperimentState(data);
-                        setState(() {
-                          draggedItems.add(data); // Add dragged item to the list
-                        });
-                        speakInstruction(data); // Call speakInstruction when an item is dropped
+                        updateExperimentState(data); // This will now store the data in Firestore
+                        speakInstruction(data); // Speak the instruction for the item
                       },
                       builder: (context, candidateData, rejectedData) {
                         return Container(
@@ -204,24 +245,14 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Dropper Animation
-                                Lottie.asset(
-                                  'assets/animations/5.json',
-                                  width: 200,
-                                  height: 200,
-                                ),
+                                Lottie.asset('assets/animations/5.json', width: 200, height: 200),
                                 SizedBox(height: 10),
-                                // Flask Animation with Color Filter
                                 ColorFiltered(
                                   colorFilter: ColorFilter.mode(
                                     currentColor.withOpacity(0.5),
                                     BlendMode.srcATop,
                                   ),
-                                  child: Lottie.asset(
-                                    lottieAnimationPath,
-                                    width: 250,
-                                    height: 200,
-                                  ),
+                                  child: Lottie.asset(lottieAnimationPath, width: 250, height: 200),
                                 ),
                               ],
                             ),
@@ -239,52 +270,24 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
     );
   }
 
-  // Function to build draggable items with a label
-  Widget buildDraggableWithLabel(String name, String imagePath) {
-    return Column(
-      children: [
-        Draggable<String>( 
-          data: name,
-          feedback: Material(
-            child: EquipmentBox(name: name, imagePath: imagePath, isFeedback: true),
+  // Widget to create Draggable with Label and Description
+  Widget buildDraggableWithLabel(String label, String description, String assetImage) {
+    return Draggable<String>(
+      data: label, // Data to be passed when dragged
+      feedback: Material(
+        color: Colors.transparent,
+        child: Image.asset(assetImage, width: 80, height: 80),
+      ),
+      childWhenDragging: Container(),
+      child: Column(
+        children: [
+          Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Image.asset(assetImage, width: 80, height: 80),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(description, style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
           ),
-          childWhenDragging: Opacity(
-            opacity: 0.3,
-            child: EquipmentBox(name: name, imagePath: imagePath),
-          ),
-          child: EquipmentBox(name: name, imagePath: imagePath),
-        ),
-        SizedBox(height: 5),
-        Text(
-          name,
-          style: TextStyle(fontSize: 14),
-        ),
-      ],
-    );
-  }
-}
-
-// Widget for displaying draggable equipment
-class EquipmentBox extends StatelessWidget {
-  final String name;
-  final String imagePath;
-  final bool isFeedback;
-
-  EquipmentBox({required this.name, required this.imagePath, this.isFeedback = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      width: 80,
-      height: 80,
-      decoration: BoxDecoration(
-        color: isFeedback ? Colors.blueAccent : Colors.lightBlueAccent,
-        borderRadius: BorderRadius.circular(8),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
+        ],
       ),
     );
   }

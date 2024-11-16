@@ -2,7 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id 'com.google.gms.google-services' // Necessary for Firebase
-    id "dev.flutter.flutter-gradle-plugin"
+    id "dev.flutter.flutter-gradle-plugin" // Flutter Gradle Plugin
 }
 
 def localProperties = new Properties()
@@ -13,42 +13,47 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+// Flutter versioning
 def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "1"
 def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
 android {
     namespace = "com.example.chemlab"
-    compileSdkVersion 34  // Use a fixed version here
+    compileSdkVersion 34  // Ensure this is the latest supported version for your app
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_17 // Java 17 compatibility
         targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "17" // Kotlin JVM target version
     }
 
     defaultConfig {
         applicationId = "com.example.chemlab"
-        minSdk = 23  // Ensure this matches your Flutter project's minSdkVersion
-        targetSdk = 34  // Align with your Flutter project's target SDK
+        minSdk = 23  // Minimum supported Android version (Android 6.0+)
+        targetSdk = 34  // Target the latest Android version your app supports
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug  // For production, set up release signing config
+            signingConfig = signingConfigs.debug // Use debug signing for testing; replace with a release config for production
+            minifyEnabled false // Disable minification during debug/release
+            shrinkResources false // Disable resource shrinking
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.4.0') // Check for latest
-    implementation 'com.google.firebase:firebase-auth'
+    // Firebase BOM for managing versions
+    implementation platform('com.google.firebase:firebase-bom:33.4.0') // Replace with the latest BOM if needed
+    implementation 'com.google.firebase:firebase-auth' // Firebase Authentication
 }
 
 flutter {
-    source = "../.."
+    source = "../.." // Path to the Flutter project
 }

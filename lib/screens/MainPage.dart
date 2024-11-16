@@ -1,8 +1,6 @@
 import 'package:chemlab_flutter_project/screens/ExperimentPage.dart';
 import 'package:chemlab_flutter_project/screens/Moduals.dart';
 import 'package:chemlab_flutter_project/screens/NotesPage.dart';
-
-
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:chemlab_flutter_project/screens/Qize.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +13,8 @@ class MainPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Define scaling factors for different screen sizes
-// Text scale based on system settings
-
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 139, 205, 220),  // Background color
+      backgroundColor: const Color.fromARGB(255, 139, 205, 220),  // Background color
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -31,7 +26,7 @@ class MainPage extends StatelessWidget {
               width: screenWidth * 0.6,   // 60% of screen width
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Color.fromARGB(255, 104, 181, 198),
+                color: const Color.fromARGB(255, 104, 181, 198),
                 border: Border.all(color: Colors.black),
               ),
               child: Center(
@@ -47,10 +42,10 @@ class MainPage extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
-                 Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  ProfilePage(),  // Navigate to profile page
+                    builder: (context) => ProfilePage(),  // Navigate to profile page
                   ),
                 );
               },
@@ -63,147 +58,101 @@ class MainPage extends StatelessWidget {
           ],
         ),
       ),
-      body: SingleChildScrollView(  // Added to handle overflow on smaller screens
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Lottie animation container
             Container(
               height: screenHeight * 0.25, // 25% of screen height
-              child: Lottie.asset('assets/animations/Mainpage1.json'), // Ensure you have the correct animation path
+              child: Lottie.asset('assets/animations/Mainpage1.json'), // Ensure correct animation path
             ),
             SizedBox(height: screenHeight * 0.03), // 3% of screen height
 
-        
+            // First row with Quiz and Modulas buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Quiz button
-                Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QuizePage(),
-                          ),);
-                        // Handle quiz button press
-                      },
-                      child: Image.asset(
-                        'assets/images/quiz.png',  // Quiz image
-                        height: screenHeight * 0.1, // 10% of screen height
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                    Text(
-                      'Quiz', 
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04,  // Dynamic font size
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                buildFeatureButton(
+                  context,
+                  'Quiz',
+                  'assets/images/quiz.png',
+                  screenHeight,
+                  screenWidth,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => QuizePage()),
+                  ),
                 ),
-
-                // Modulas button
-                Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ModualsPage(),
-                          ),);
-                        // Handle modulas button press
-                      },
-                      child: Image.asset(
-                        'assets/images/modulas.png',  // Modulas image
-                        height: screenHeight * 0.1, // 10% of screen height
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                    Text(
-                      'Modulas', 
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04,  // Dynamic font size
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                buildFeatureButton(
+                  context,
+                  'Modulas',
+                  'assets/images/modulas.png',
+                  screenHeight,
+                  screenWidth,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ModualsPage()),
+                  ),
                 ),
               ],
             ),
             SizedBox(height: screenHeight * 0.02), // 2% of screen height
 
-            // Second row with buttons (Experiments, Notes)
+            // Second row with Experiments and Notes buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Experiments button
-                Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                       Navigator.push(
+                buildFeatureButton(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) =>  ExperimentPage(),),);
-                  //       // Handle experiments button press
-                      },
-                      child: Image.asset(
-                        'assets/images/experiments.png',  // Experiments image
-                        height: screenHeight * 0.1, // 10% of screen height
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                    Text(
-                      'Experiments', 
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04,  // Dynamic font size
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                  'Experiments',
+                  'assets/images/experiments.png',
+                  screenHeight,
+                  screenWidth,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ExperimentPage()),
+                  ),
                 ),
-
-                // Notes button
-                Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-
-                            Navigator.push(
+                buildFeatureButton(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) =>  Notespage(),),);
-                        // Handle notes button press
-                      },
-                      child: Image.asset(
-                        'assets/images/notes.png',  // Notes image
-                        height: screenHeight * 0.1, // 10% of screen height
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.01), // 1% of screen height
-                    Text(
-                      'Notes', 
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04,  // Dynamic font size
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                  'Notes',
+                  'assets/images/notes.png',
+                  screenHeight,
+                  screenWidth,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Notespage()),
+                  ),
                 ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // Helper method to create a feature button with image and label
+  Widget buildFeatureButton(BuildContext context, String label, String imagePath, double screenHeight, double screenWidth, VoidCallback onTap) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Image.asset(
+            imagePath,
+            height: screenHeight * 0.1, // 10% of screen height
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.01), // 1% of screen height
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: screenWidth * 0.04, // Dynamic font size
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }
