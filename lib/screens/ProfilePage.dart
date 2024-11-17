@@ -1,8 +1,7 @@
-import 'package:chemlab_flutter_project/Repository/User_repository.dart';
-import 'package:chemlab_flutter_project/model/user_model.dart';
-import 'package:chemlab_flutter_project/screens/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chemlab_flutter_project/screens/LoginPage.dart'; // Make sure you import LoginPage
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -11,41 +10,62 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final UserRepository _userRepository = UserRepository.instance;
-  Future<UserModel?>? _userDataFuture;
+  late User _user;
+  bool _loading = true; // To show loading state while fetching user data
+  bool _error = false; // To track if an error occurs
+  String _username = '';
+  String _email = '';
 
   @override
   void initState() {
     super.initState();
-    _setUserData(); // Fetch user data initially
-    _auth.userChanges().listen((User? user) {
-      if (user != null) {
-        _setUserData(); // Update user data whenever authentication state changes
+    _fetchUserData();
+  }
+
+  // Fetch user data from Firestore based on the logged-in user's email
+  Future<void> _fetchUserData() async {
+    try {
+      _user = _auth.currentUser!; // Get current logged-in user
+      if (_user == null) {
+        setState(() {
+          _error = true;
+          _loading = false;
+        });
+        return;
       }
-    });
-  }
 
-  void _setUserData() {
-    setState(() {
-      _userDataFuture = _fetchUserData();
-    });
-  }
+      String email = _user.email!.toLowerCase(); // Use the email to fetch data
 
-  Future<UserModel?> _fetchUserData() async {
-    User? currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      print("No user is logged in.");
-      return null; // No user is logged in
+      print("Fetching data for email: $email");
+
+      // Fetch the document from Firestore using the email as the document ID
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(email)
+          .get();
+
+      if (userDoc.exists) {
+        // User data exists in the database, let's fetch it
+        setState(() {
+          _username = userDoc['username'] ?? 'No username found';
+          _email = userDoc['email'] ?? 'No email found';
+          _loading = false; // Stop loading once data is fetched
+        });
+        print("User data fetched: $_username, $_email");
+      } else {
+        setState(() {
+          _error = true; // Set error state if no data found
+          _loading = false; // Stop loading
+        });
+        print("No user found in Firestore with email: $email");
+      }
+    } catch (e) {
+      setState(() {
+        _loading = false; // Stop loading if an error occurs
+        _error = true; // Set error state
+      });
+      print("Error fetching user data: $e");
     }
-
-    String email = currentUser.email!.toLowerCase();
-    print("Fetching user data for email: $email"); // Debugging log
-
-    UserModel? user = await _userRepository.getUserByEmail(email);
-    if (user == null) {
-      print("User data not found for email: $email");
-    }
-    return user;
   }
 
   @override
@@ -65,121 +85,106 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: FutureBuilder<UserModel?>(
-            future: _userDataFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
-              if (!snapshot.hasData || snapshot.data == null) {
-                return Center(child: Text('No user data found.'));
-              }
-
-              UserModel user = snapshot.data!;
-              String username = user.username;
-              String email = user.email;
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.grey[300],
-                    child: Icon(
-                      Icons.person,
-                      size: 60,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    "Your Profile",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: TextEditingController(text: username),
-                    decoration: InputDecoration(
-                      hintText: 'Username',
-                      prefixIcon: Icon(Icons.person, color: Colors.black),
-                      filled: true,
-                      fillColor: Color.fromARGB(255, 104, 181, 198),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    readOnly: true,
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: TextEditingController(text: '********'),
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      prefixIcon: Icon(Icons.visibility, color: Colors.black),
-                      filled: true,
-                      fillColor: Color.fromARGB(255, 104, 181, 198),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    obscureText: true,
-                    readOnly: true,
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: TextEditingController(text: email),
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      prefixIcon: Icon(Icons.email, color: Colors.black),
-                      filled: true,
-                      fillColor: Color.fromARGB(255, 104, 181, 198),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    readOnly: true,
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF2FA0B9),
-                      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await _auth.signOut();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginPage(),
+          child: _loading
+              ? Center(child: CircularProgressIndicator()) // Show loading indicator while fetching data
+              : _error
+                  ? Center(child: Text('Error fetching user data. Please try again later.')) // Show error message
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.grey[300],
+                          child: Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Colors.black,
+                          ),
                         ),
-                      );
-                    },
-                    child: Text(
-                      'Log Out',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
+                        SizedBox(height: 20),
+                        Text(
+                          "Your Profile",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: TextEditingController(text: _username),
+                          decoration: InputDecoration(
+                            hintText: 'Username',
+                            prefixIcon: Icon(Icons.person, color: Colors.black),
+                            filled: true,
+                            fillColor: Color.fromARGB(255, 104, 181, 198),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          readOnly: true,
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: TextEditingController(text: '********'),
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            prefixIcon: Icon(Icons.visibility, color: Colors.black),
+                            filled: true,
+                            fillColor: Color.fromARGB(255, 104, 181, 198),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          obscureText: true,
+                          readOnly: true,
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: TextEditingController(text: _email),
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                            prefixIcon: Icon(Icons.email, color: Colors.black),
+                            filled: true,
+                            fillColor: Color.fromARGB(255, 104, 181, 198),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          readOnly: true,
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF2FA0B9),
+                            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () async {
+                            await _auth.signOut(); // Sign out the user
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(), // Navigate to LoginPage
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Log Out',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
         ),
       ),
     );

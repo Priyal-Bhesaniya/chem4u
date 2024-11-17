@@ -18,6 +18,7 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
   String feedback = '';
   bool quizCompleted = false;
 
+  // Check if the answer is correct and update the score and feedback
   void _checkAnswer(int index, String droppedItem) {
     setState(() {
       if (droppedItem == correctAnswers[index]) {
@@ -26,26 +27,51 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
       } else {
         feedback = 'Incorrect. Try again!';
       }
+
+      // Check if all answers are filled
       if (answers.every((answer) => answer.isNotEmpty)) {
         quizCompleted = true;
-        _saveScoreToFirestore(); // Save to Firestore when quiz is complete
       }
     });
   }
 
+  // Save the user's score to Firestore
   Future<void> _saveScoreToFirestore() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('quizzes').add({
-        'userId': user.uid,
-        'quizName': 'Drag and Drop Quiz 1',
-        'score': score,
-        'totalQuestions': targetNames.length,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+      try {
+        await FirebaseFirestore.instance.collection('quizzes').doc(user.email).set({
+          'email': user.email,
+          'quizName': 'Drag and Drop Quiz 1',
+          'score': score,
+          'totalQuestions': targetNames.length,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+
+        print("Quiz score saved successfully!");
+      } catch (e) {
+        print("Error saving score to Firestore: $e");
+      }
+    } else {
+      print("No user is currently logged in.");
     }
   }
 
+  // Handle submission of the quiz
+  void _submitQuiz() async {
+    if (!quizCompleted) {
+      setState(() {
+        feedback = "Please complete the quiz before submitting.";
+      });
+      return;
+    }
+
+    // Save score and navigate to animation
+    await _saveScoreToFirestore();
+    _showLottieAnimation();
+  }
+
+  // Navigate to Lottie animation page
   void _showLottieAnimation() {
     Navigator.pushReplacement(
       context,
@@ -57,12 +83,6 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (quizCompleted && score > 3) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showLottieAnimation();
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Quiz 1: Drag and Drop'),
@@ -141,16 +161,19 @@ class _DragAndDropQuizPageState extends State<DragAndDropQuizPage> {
               ),
               SizedBox(height: 30),
 
-              // Completion message
-              if (quizCompleted)
-                Column(
-                  children: [
-                    Text(
-                      'Quiz Complete! Final Score: $score/${targetNames.length}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
-                    ),
-                  ],
+              // Submit button
+              ElevatedButton(
+                onPressed: _submitQuiz,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue, // Button color
+                  foregroundColor: Colors.white, // Text color
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                child: Text('Submit Quiz'),
+              ),
             ],
           ),
         ),
@@ -252,20 +275,20 @@ class LottieAnimationPage extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-           ElevatedButton(
-  onPressed: () {
-    Navigator.popUntil(context, (route) => route.isFirst);
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.black, // Button background color
-    foregroundColor: Colors.white, // Text color
-    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12), // Optional padding for size adjustment
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8), // Optional rounded corners
-    ),
-  ),
-  child: Text('Return to Home'),
-)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text('Return to Home'),
+            )
           ],
         ),
       ),

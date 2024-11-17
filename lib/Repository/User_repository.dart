@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserRepository extends GetxController {
-  static UserRepository get instance => Get.find<UserRepository>();
+  static UserRepository get instance => Get.find();
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   /// Creates a new user in Firestore

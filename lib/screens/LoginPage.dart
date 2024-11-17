@@ -45,62 +45,66 @@ class _LoginPageState extends State<LoginPage> {
 
   // Handle final input validation and login
   void _validateInput() async {
-    _validateEmail();
-    _validatePassword();
+  _validateEmail();
+  _validatePassword();
 
-    if (_emailError == null && _passwordError == null) {
-      try {
-        // Attempt to retrieve user data from Firestore
-        final userDoc = await FirebaseFirestore.instance
-            .collection('Users')
-            .doc(_emailController.text)
-            .get();
+  if (_emailError == null && _passwordError == null) {
+    try {
+      // Attempt to retrieve user data from Firestore
+      final userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(_emailController.text)
+          .get();
 
-        if (userDoc.exists) {
-          String dbPassword = userDoc.data()?['password'] ?? '';
+      if (userDoc.exists) {
+        String dbPassword = userDoc.data()?['password'] ?? '';
 
-          if (dbPassword == _passwordController.text) {
-            // Credentials matched, update or store user data
-            final userData = {
-              'email': _emailController.text,
-              'lastLogin': FieldValue.serverTimestamp(), // Record login timestamp
-            };
+        if (dbPassword == _passwordController.text) {
+          // Credentials matched, update or store user data
+          final userData = {
+            'email': _emailController.text,
+            'lastLogin': FieldValue.serverTimestamp(), // Record login timestamp
+            'loginCount': FieldValue.increment(1), // Increment login count
+          };
 
-            await FirebaseFirestore.instance
-                .collection('Users')
-                .doc(_emailController.text)
-                .update(userData);
+          await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(_emailController.text)
+              .update(userData)
+              .then((_) {
+                // Successfully updated, navigate to MainPage
+                Get.offAll(() => MainPage());
+              });
 
-            // Navigate to MainPage
-            Get.offAll(() => MainPage());
-          } else {
-            // Incorrect password
-            Get.snackbar(
-              'Login Failed', 'Incorrect password. Please try again.',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.redAccent,
-              colorText: Colors.white,
-            );
-          }
         } else {
-          // User not found
+          // Incorrect password
           Get.snackbar(
-            'Login Failed', 'No user found with this email.',
+            'Login Failed', 'Incorrect password. Please try again.',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.redAccent,
             colorText: Colors.white,
           );
         }
-      } catch (e) {
+      } else {
+        // User not found
         Get.snackbar(
-          'Login Error', 'Failed to log in: $e',
+          'Login Failed', 'No user found with this email.',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.redAccent,
           colorText: Colors.white,
         );
       }
+    } catch (e) {
+      Get.snackbar(
+        'Login Error', 'Failed to log in: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

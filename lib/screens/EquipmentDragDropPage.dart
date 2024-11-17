@@ -4,6 +4,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+// Import statements remain unchanged
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -18,12 +20,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: EquipmentDragDropPage(),
+      home: EquipmentDragDropPage(email: "testuser@example.com"), // Pass the email here
     );
   }
 }
 
 class EquipmentDragDropPage extends StatefulWidget {
+  final String email; // Add email as a parameter
+
+  EquipmentDragDropPage({required this.email});
+
   @override
   _EquipmentDragDropPageState createState() => _EquipmentDragDropPageState();
 }
@@ -44,7 +50,6 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
     checkTTSAvailability(); // Check if TTS language is available
   }
 
-  // Function to check TTS language availability
   void checkTTSAvailability() async {
     bool isAvailable = await flutterTts.isLanguageAvailable("en-US");
     if (isAvailable) {
@@ -54,9 +59,8 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
     }
   }
 
-  // Function to speak instructions for each item
   void speakInstruction(String item) async {
-    if (isSpeaking) return; // Prevent speaking while speech is ongoing
+    if (isSpeaking) return;
 
     setState(() {
       isSpeaking = true;
@@ -84,52 +88,53 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
     });
   }
 
-  // Function to speak all instructions when play button is pressed
   void speakAllInstructions() {
-    if (isSpeaking) return; // Prevent multiple calls while speaking
+    if (isSpeaking) return;
 
     setState(() {
       isSpeaking = true;
     });
 
-    // Speak all instructions simultaneously
     flutterTts.speak("Follow the steps to observe color changes based on pH level.");
     flutterTts.speak("Step one: Add Universal Indicator, it helps in detecting pH changes.");
     flutterTts.speak("Step two: Add Vinegar, an acidic solution, to observe pH change.");
     flutterTts.speak("Step three: Add Ammonia, a basic solution, to observe pH change.");
-    flutterTts.speak("Step four: Add more Vinegar for a stronger acid.");
+    flutterTts.speak("Step four: Add more Vinegar for a stronger acid. After that observe the color according to pH change.");
 
     setState(() {
       isSpeaking = false;
     });
   }
 
-  // Function to stop all speech when stop button is pressed
   void stopSpeaking() async {
-    await flutterTts.stop(); // Stop any ongoing speech
+    await flutterTts.stop();
     setState(() {
       isSpeaking = false;
     });
   }
 
-  // Function to save the experiment data to Firebase
   Future<void> saveExperimentData() async {
     try {
-      // Creating a reference to the Firestore collection
-      DocumentReference docRef = await _firestore.collection('experiments').add({
+      // Use the email ID as a document reference
+      DocumentReference docRef = _firestore
+          .collection('experiments')
+          .doc(widget.email)
+          .collection('records')
+          .doc();
+
+      await docRef.set({
+        'email': widget.email,
         'items': draggedItems,
         'timestamp': FieldValue.serverTimestamp(),
         'color': currentColor.toString(),
       });
 
-      // You can also add additional data such as the timestamp of when the experiment was done
-      print('Experiment data saved with ID: ${docRef.id}');
+      print('Experiment data saved for ${widget.email}');
     } catch (e) {
       print('Error saving experiment data: $e');
     }
   }
 
-  // Update experiment state and save to Firestore
   void updateExperimentState(String item) {
     setState(() {
       if (item == "Universal Indicator") {
@@ -142,10 +147,9 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
         currentColor = Colors.redAccent;
       }
 
-      draggedItems.add(item); // Add the item to the draggedItems list
+      draggedItems.add(item);
     });
 
-    // Save the experiment data to Firestore after an item is dropped
     saveExperimentData();
   }
 
@@ -162,7 +166,7 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
           },
         ),
       ),
-      body: SafeArea( // Wrap the body with SafeArea to avoid overflow
+      body: SafeArea(
         child: Column(
           children: [
             Padding(
@@ -176,29 +180,30 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                 style: TextStyle(fontSize: 16),
               ),
             ),
-            // Row for Play and Stop Buttons side by side
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Align buttons in center
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: speakAllInstructions, // Trigger voice instructions
+                    onPressed: speakAllInstructions,
                     child: Text("Play Instructions"),
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: const Color.fromARGB(255, 49, 184, 53),
+                      foregroundColor: Colors.white,
+                      backgroundColor: const Color.fromARGB(255, 49, 184, 53),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     ),
                   ),
-                  SizedBox(width: 20), // Add some space between the buttons
+                  SizedBox(width: 20),
                   ElevatedButton(
-                    onPressed: stopSpeaking, // Trigger stop speech
+                    onPressed: stopSpeaking,
                     child: Text("Stop Instructions"),
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -211,9 +216,8 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
             Expanded(
               child: Row(
                 children: [
-                  // Left Column - Equipment to Drag with Labels and Descriptions
                   Expanded(
-                    child: SingleChildScrollView( // Make this scrollable to prevent overflow
+                    child: SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -225,12 +229,11 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                       ),
                     ),
                   ),
-                  // Right Column - Drop Target with Lottie Animation and Color Filter
                   Expanded(
-                    child: DragTarget<String>( 
+                    child: DragTarget<String>(
                       onAccept: (data) {
-                        updateExperimentState(data); // This will now store the data in Firestore
-                        speakInstruction(data); // Speak the instruction for the item
+                        updateExperimentState(data);
+                        speakInstruction(data);
                       },
                       builder: (context, candidateData, rejectedData) {
                         return Container(
@@ -239,8 +242,6 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
                             border: Border.all(color: Colors.grey),
                             color: currentColor.withOpacity(0.2),
                           ),
-                          width: double.infinity,
-                          height: double.infinity,
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -270,10 +271,9 @@ class _EquipmentDragDropPageState extends State<EquipmentDragDropPage> {
     );
   }
 
-  // Widget to create Draggable with Label and Description
   Widget buildDraggableWithLabel(String label, String description, String assetImage) {
     return Draggable<String>(
-      data: label, // Data to be passed when dragged
+      data: label,
       feedback: Material(
         color: Colors.transparent,
         child: Image.asset(assetImage, width: 80, height: 80),

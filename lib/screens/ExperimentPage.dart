@@ -1,11 +1,15 @@
-
 import 'package:chemlab_flutter_project/screens/EquipmentDragDropPage.dart';
 import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Add Firebase Authentication import
 
 class ExperimentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Get the current user from Firebase Authentication
+    User? user = FirebaseAuth.instance.currentUser;
+    String email = user?.email ?? "guest@example.com"; // Use a default value if user is not logged in
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Experiment"),
@@ -44,9 +48,11 @@ class ExperimentPage extends StatelessWidget {
 
             // Experiment buttons with navigation
             buildExperimentButton(context, "Experiment 1", () {
-                 Navigator.push(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => EquipmentDragDropPage()),
+                MaterialPageRoute(
+                  builder: (context) => EquipmentDragDropPage(email: email),
+                ),
               );
               print("Navigate to Experiment 1"); // Placeholder action
             }),

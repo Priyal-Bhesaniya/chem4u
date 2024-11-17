@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore import
-import 'package:chemlab_flutter_project/screens/ProfilePage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CleanNotesPage extends StatefulWidget {
   @override
@@ -9,45 +9,55 @@ class CleanNotesPage extends StatefulWidget {
 
 class _CleanNotesPageState extends State<CleanNotesPage> {
   final TextEditingController _controller = TextEditingController();
-  final List<String> _notes = [];
+  String? userEmail;
 
-  // Reference to Firestore collection (change 'notes' to your desired collection name)
+  // Firestore collection reference
   final CollectionReference notesCollection =
       FirebaseFirestore.instance.collection('notes');
 
   @override
   void initState() {
     super.initState();
-    _loadNotes(); // Load notes when the page is first created
+    _fetchCurrentUserEmail();
   }
 
-  // Fetch notes from Firestore
-  Future<void> _loadNotes() async {
+  // Fetch the current user's email
+  Future<void> _fetchCurrentUserEmail() async {
     try {
-      QuerySnapshot snapshot = await notesCollection.orderBy('timestamp').get();
-      List<String> fetchedNotes = snapshot.docs.map((doc) {
-        return doc['note'] as String;
-      }).toList();
-      setState(() {
-        _notes.clear();  // Clear the current list of notes
-        _notes.addAll(fetchedNotes);  // Add fetched notes to the list
-      });
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        setState(() {
+          userEmail = user.email; // Get the email of the logged-in user
+        });
+      } else {
+        print("No user is currently logged in.");
+      }
     } catch (e) {
-      print('Error loading notes: $e');
+      print("Error fetching user email: $e");
     }
   }
 
   // Add a new note to Firestore
   Future<void> _addNote() async {
-    if (_controller.text.isNotEmpty) {
-      setState(() {
-        _notes.add(_controller.text);
-      });
-      await notesCollection.add({
-        'note': _controller.text,
-        'timestamp': FieldValue.serverTimestamp(), // optional: for ordering
-      });
-      _controller.clear(); // Clear the input field after adding a note
+    if (_controller.text.isNotEmpty && userEmail != null) {
+      try {
+        String noteContent = _controller.text;
+
+        // Save the note to Firestore
+        await notesCollection.add({
+          'note': noteContent,
+          'email': userEmail, // Associate the note with the user's email
+          'timestamp': FieldValue.serverTimestamp(), // Store timestamp
+        });
+
+        _controller.clear(); // Clear the input field
+        print("Note added successfully!");
+      } catch (e) {
+        print("Error adding note: $e");
+      }
+    } else {
+      print("Note content is empty or userEmail is null.");
     }
   }
 
@@ -55,38 +65,18 @@ class _CleanNotesPageState extends State<CleanNotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notes"),
-        backgroundColor: Color.fromARGB(255, 104, 181, 198),
+        title: const Text("Add Notes"),
+        backgroundColor: const Color.fromARGB(255, 104, 181, 198),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_outline, size: 30),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
-              );
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
-          Container(
-            margin: EdgeInsets.all(16.0),
-            height: 90,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/notes.png"), // Add your background image
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Input field for new notes
           Padding(
@@ -96,30 +86,28 @@ class _CleanNotesPageState extends State<CleanNotesPage> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Write your note...",
                       border: OutlineInputBorder(),
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: _addNote,
                 ),
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
-          // Display notes
-          Expanded(
-            child: ListView.builder(
-              itemCount: _notes.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_notes[index]),
-                );
-              },
+          // Optional: Display message if no note has been added
+          const Expanded(
+            child: Center(
+              child: Text(
+                "Add your notes here.",
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ),
         ],
